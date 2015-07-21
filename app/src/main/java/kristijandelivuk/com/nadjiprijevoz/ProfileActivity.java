@@ -4,14 +4,37 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.RatingBar;
+import android.widget.TextView;
+
+import com.parse.ParseUser;
 
 
 public class ProfileActivity extends ActionBarActivity {
+
+    RatingBar mUserRating;
+    TextView mUserNameAndSurname;
+    TextView mUserPhoneNumber;
+    TextView mUserEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        mUserRating = (RatingBar) findViewById(R.id.ratingBar);
+        mUserNameAndSurname = (TextView) findViewById(R.id.textNameAndSurname);
+        mUserPhoneNumber = (TextView) findViewById(R.id.textPhone);
+        mUserEmail = (TextView) findViewById(R.id.textEmail);
+
+        ParseUser user = new ParseUser().getCurrentUser();
+
+        mUserEmail.setText(user.getEmail());
+        mUserPhoneNumber.setText(user.get("phone").toString());
+        mUserNameAndSurname.setText(user.get("name").toString() + " " + user.get("surname").toString());
+        mUserRating.setMax(5);
+        mUserRating.setRating(3);
+
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,11 +12,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.util.List;
 
 public class LoginActivity extends ActionBarActivity {
 
@@ -34,6 +39,15 @@ public class LoginActivity extends ActionBarActivity {
         Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "w62mIaRwUtHlC8llfmbTaCb0Z7vjgCrDgI4j1HZY", "yE28Zo8hEZbBmc2NwD03LSzoEeL6uotJfs9dl61p");
+        ParseUser.enableRevocableSessionInBackground();
+
+
+
+        ParseUser currentUser = new ParseUser().getCurrentUser();
+        if (currentUser != null) {
+            // do stuff with the user
+            currentUser.logOut();
+        }
 
         // Init
 

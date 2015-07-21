@@ -13,4 +13,70 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
+    <fragment android:layout_width="match_parent"
+              android:layout_height="300dp"
+              android:id="@+id/google_map"
+              tools:context=".MapsActivity"
+              android:name="com.google.android.gms.maps.SupportMapFragment"
+              tools:layout="@layout/toolbar"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/google_map">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Starting location"
+                android:id="@+id/textView3"
+                android:textSize="22sp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editStartingPoint"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Destination"
+                android:id="@+id/textView4"
+                android:textSize="22sp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editDestination"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spaces Available"
+                android:id="@+id/textView5"
+                android:textSize="22sp"/>
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/editSpacesAvailable"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create"
+                android:id="@+id/buttonCreate"
+                android:layout_gravity="center_horizontal"/>
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
 </RelativeLayout>

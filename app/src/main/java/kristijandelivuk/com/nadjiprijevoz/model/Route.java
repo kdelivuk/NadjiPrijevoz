@@ -9,12 +9,22 @@ public class Route {
     private String mStartingPoint;
     private User mCreator;
     private User[] mPassangers;
+    private int mSpacesAvailable;
 
-    public Route(String destination, String startingPoint, User creator, User[] passangers) {
+    public Route(String destination, String startingPoint, User creator, int spacesAvailable) {
         mDestination = destination;
         mStartingPoint = startingPoint;
         mCreator = creator;
-        mPassangers = passangers;
+        mSpacesAvailable = spacesAvailable;
+        mPassangers = new User[spacesAvailable];
+    }
+
+    public int getSpacesAvailable() {
+        return mSpacesAvailable;
+    }
+
+    public void setSpacesAvailable(int spacesAvailable) {
+        mSpacesAvailable = spacesAvailable;
     }
 
     public String getDestination() {

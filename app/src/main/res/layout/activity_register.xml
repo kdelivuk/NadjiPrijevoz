@@ -87,7 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="name"
-        android:id="@+id/textName"
+        android:id="@+id/textNameAndSurname"
         android:textColor="#FFFFFF"
         android:layout_above="@+id/editName"
         android:layout_alignStart="@+id/editName"/>
@@ -99,8 +99,8 @@
         android:ems="10"
         android:id="@+id/editSurname"
         android:textColor="#FFFFFF"
-        android:layout_above="@+id/textName"
-        android:layout_alignStart="@+id/textName"/>
+        android:layout_above="@+id/textNameAndSurname"
+        android:layout_alignStart="@+id/textNameAndSurname"/>
 
     <TextView
         android:layout_width="wrap_content"

@@ -3,12 +3,14 @@ package kristijandelivuk.com.nadjiprijevoz;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -31,10 +33,11 @@ public class RegisterActivity extends ActionBarActivity {
         setContentView(R.layout.activity_register);
 
         mRegister = (Button) findViewById(R.id.buttonRegister);
-        mName = (EditText) findViewById(R.id.editUsername);
+
+        mName = (EditText) findViewById(R.id.editName);
         mSurname = (EditText) findViewById(R.id.editSurname);
         mPhone = (EditText) findViewById(R.id.editPhone);
-        mEmail = (EditText) findViewById(R.id.editPhone);
+        mEmail = (EditText) findViewById(R.id.editEmail);
         mPassword = (EditText) findViewById(R.id.editPassword);
 
         mRegister.setOnClickListener(new View.OnClickListener() {
@@ -58,20 +61,26 @@ public class RegisterActivity extends ActionBarActivity {
         ParseUser newUser = new ParseUser();
 
         newUser.setUsername(username);
+        Log.v("username", username);
         newUser.setEmail(email);
         newUser.setPassword(password);
-        newUser.put("name" , name);
+        Log.v("password", password);
+        newUser.put("name", name);
         newUser.put("surname" , surname);
         newUser.put("phone", phone);
 
         newUser.signUpInBackground(new SignUpCallback() {
             @Override
             public void done(ParseException e) {
-                Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
-                startActivity(intent);
+
+                if (e == null) {
+                    Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
+                    startActivity(intent);
+                } else {
+                    Log.v("Error:", e.toString());
+                }
             }
         });
-
 
     }
 
