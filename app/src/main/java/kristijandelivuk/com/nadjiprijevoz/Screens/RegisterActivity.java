@@ -1,4 +1,4 @@
-package kristijandelivuk.com.nadjiprijevoz;
+package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
@@ -10,12 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-import kristijandelivuk.com.nadjiprijevoz.model.User;
+import kristijandelivuk.com.nadjiprijevoz.R;
 
 
 public class RegisterActivity extends ActionBarActivity {
@@ -74,7 +73,7 @@ public class RegisterActivity extends ActionBarActivity {
             public void done(ParseException e) {
 
                 if (e == null) {
-                    Intent intent = new Intent(RegisterActivity.this, MapsActivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, MapListActivity.class);
                     startActivity(intent);
                 } else {
                     Log.v("Error:", e.toString());

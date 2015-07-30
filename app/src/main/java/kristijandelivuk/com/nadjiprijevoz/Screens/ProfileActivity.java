@@ -1,4 +1,4 @@
-package kristijandelivuk.com.nadjiprijevoz;
+package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.parse.ParseUser;
+
+import kristijandelivuk.com.nadjiprijevoz.R;
 
 
 public class ProfileActivity extends ActionBarActivity {

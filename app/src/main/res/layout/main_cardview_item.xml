@@ -2,22 +2,31 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:card_view="http://schemas.android.com/apk/res-auto"
               android:padding="16dp"
+              android:id="@+id/linearlayout"
                 android:layout_height="match_parent"
                  android:layout_width="match_parent">
 
     <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cv"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        card_view:cardCornerRadius="4dp">
+        android:layout_margin="8dp"
+        card_view:cardCornerRadius="20dp"
+        card_view:cardElevation="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
             android:padding="16dp"
             >
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="148dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

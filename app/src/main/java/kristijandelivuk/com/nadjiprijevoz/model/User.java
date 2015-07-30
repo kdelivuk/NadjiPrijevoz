@@ -10,6 +10,7 @@ public class User {
     private String surname;
     private String phoneNumber;
     private String email;
+    private PointModel currentLocation;
 
     public User(String username, String name, String surname, String phoneNumber, String email) {
         this.username = username;
