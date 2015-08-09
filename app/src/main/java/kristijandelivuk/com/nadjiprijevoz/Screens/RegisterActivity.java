@@ -1,35 +1,39 @@
 package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.parse.ParseException;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
 
 
-public class RegisterActivity extends ActionBarActivity {
+public class RegisterActivity extends AppCompatActivity {
 
-    Button mRegister;
-    EditText mName;
-    EditText mPassword;
-    EditText mSurname;
-    EditText mPhone;
-    EditText mEmail;
+    private Button mRegister;
+    private EditText mName;
+    private EditText mPassword;
+    private EditText mSurname;
+    private EditText mPhone;
+    private EditText mEmail;
+    private int usernameCounter;
+    private boolean didNotGenerateUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        usernameCounter = 0;
+        didNotGenerateUser = true;
 
         mRegister = (Button) findViewById(R.id.buttonRegister);
 
@@ -42,12 +46,16 @@ public class RegisterActivity extends ActionBarActivity {
         mRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                registerUser();
+                try {
+                    registerUser();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
-    public void registerUser() {
+    public void registerUser() throws ParseException {
 
         String name = mName.getText().toString().trim();
         String surname = mSurname.getText().toString().trim();
@@ -56,6 +64,21 @@ public class RegisterActivity extends ActionBarActivity {
         String email = mEmail.getText().toString().trim();
 
         String username = generateUsername(name, surname);
+
+        while (didNotGenerateUser) {
+            String newUsername = username;
+
+            ParseQuery<ParseUser> query = ParseUser.getQuery();
+            query.whereEqualTo("username", newUsername);
+            ParseUser userFound = query.getFirst();
+
+            if (userFound != null) {
+                usernameCounter++;
+                newUsername = username + usernameCounter;
+            } else {
+                didNotGenerateUser = false;
+            }
+        }
 
         ParseUser newUser = new ParseUser();
 
@@ -86,25 +109,5 @@ public class RegisterActivity extends ActionBarActivity {
     public String generateUsername(String name, String surname) {
         return name.substring(0,1).toLowerCase() + surname.toLowerCase();
     }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_register, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

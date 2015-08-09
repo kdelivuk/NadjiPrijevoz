@@ -1,9 +1,12 @@
 package kristijandelivuk.com.nadjiprijevoz.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by kdelivuk on 17/07/15.
  */
-public class User {
+public class User implements Parcelable {
 
     private String username;
     private String name;
@@ -19,6 +22,41 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.email = email;
     }
+
+    protected User(Parcel in) {
+        username = in.readString();
+        name = in.readString();
+        surname = in.readString();
+        phoneNumber = in.readString();
+        email = in.readString();
+        currentLocation = (PointModel) in.readValue(PointModel.class.getClassLoader());
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(username);
+        dest.writeString(name);
+        dest.writeString(surname);
+        dest.writeString(phoneNumber);
+        dest.writeString(email);
+        dest.writeValue(currentLocation);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getUsername() {
         return username;

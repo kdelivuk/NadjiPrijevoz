@@ -2,9 +2,9 @@ package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,22 +17,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -43,7 +38,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
@@ -51,8 +45,9 @@ import kristijandelivuk.com.nadjiprijevoz.helper.Route;
 import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
+import kristijandelivuk.com.nadjiprijevoz.model.navigation.NavigationDrawerFragment;
 
-public class MapListActivity extends ActionBarActivity {
+public class MapListActivity extends AppCompatActivity implements RVAdapter.ListClickListener {
 
     private Toolbar mToolbar;
 
@@ -62,6 +57,10 @@ public class MapListActivity extends ActionBarActivity {
 
     // routes
     private List<RouteModel> mRoutes;
+
+    private ArrayList<User> parsePassangers;
+
+
 
     private void initializeData() {
 
@@ -74,27 +73,26 @@ public class MapListActivity extends ActionBarActivity {
             public void done(List<ParseObject> list, ParseException e) {
 
                 if (e == null) {
-                    Log.v("list", String.valueOf(list.size()));
 
-                    for (ParseObject item : list) {
+                    for (final ParseObject item : list) {
 
                         ParseUser user = (ParseUser) item.get("creator");
 
-                        JSONArray jsonArray = item.getJSONArray("points");
-                        ArrayList<PointModel> points = new ArrayList<PointModel>();
+                        JSONArray jsonArrayPoints = item.getJSONArray("points");
+                        final ArrayList<PointModel> points = new ArrayList<PointModel>();
 
-                        for (int i = 0; i<jsonArray.length(); i++) {
+                        for (int i = 0; i < jsonArrayPoints.length(); i++) {
 
                             try {
-                                JSONObject object = jsonArray.getJSONObject(i);
-                                Log.v("objectID", object.getString("objectId"));
+                                JSONObject object = jsonArrayPoints.getJSONObject(i);
+                                //Log.v("objectID", object.getString("objectId"));
 
                                 ParseQuery query = ParseQuery.getQuery("Point");
                                 query.whereEqualTo("objectId", object.getString("objectId"));
                                 ParseObject pointP = query.getFirst();
-                                Log.v("lat", pointP.get("lat").toString());
-                                Log.v("lng", pointP.get("lng").toString());
-                                points.add(new PointModel(pointP.getDouble("lat") , pointP.getDouble("lng")));
+                                //Log.v("lat", pointP.get("lat").toString());
+                                //Log.v("lng", pointP.get("lng").toString());
+                                points.add(new PointModel(pointP.getDouble("lat"), pointP.getDouble("lng")));
                             } catch (JSONException e1) {
                                 e1.printStackTrace();
                             } catch (ParseException e1) {
@@ -103,32 +101,64 @@ public class MapListActivity extends ActionBarActivity {
 
                         }
 
+                        parsePassangers = new ArrayList<>();
+                        JSONArray jsonArrayPassangers = item.getJSONArray("passangers");
+
+                        if (jsonArrayPassangers != null) {
+                            for (int i = 0; i < jsonArrayPassangers.length(); i++) {
+
+                                try {
+                                    JSONObject object = jsonArrayPassangers.getJSONObject(i);
+                                    Log.v("objectID", object.getString("objectId"));
+                                    String id = object.getString("objectId");
+
+                                    ParseQuery<ParseUser> query = ParseUser.getQuery();
+                                    query.whereEqualTo("objectId", id);
+                                    ParseUser parseUser = query.getFirst();
+
+                                    parsePassangers.add(new User(
+                                            parseUser.getUsername(),
+                                            parseUser.getString("name"),
+                                            parseUser.getString("surname"),
+                                            parseUser.getString("phone"),
+                                            parseUser.getEmail()
+                                    ));
+                                } catch (ParseException e1) {
+                                    e1.printStackTrace();
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+
+
+                            }
+                        }
+
                         RouteModel route = new RouteModel(
                                 item.get("destination").toString(),
                                 item.get("startingPoint").toString(),
                                 new User("test", "test", "test", "12345", "test@test.test"),
-                                new ArrayList<User>(),
+                                parsePassangers,
                                 points,
                                 Integer.parseInt(item.get("numberOfSpaces").toString())
                         );
 
-                        Log.v("route", route.toString());
-                        mRoutes.add(route);
 
+                        route.setId(item.getObjectId());
+                        Log.v("parsePassangers", parsePassangers.toString());
+
+                        mRoutes.add(route);
 
                     }
 
                     mAdapter = new RVAdapter(MapListActivity.this, mRoutes);
+                    mAdapter.setListClickListener(MapListActivity.this);
 
                     mRecyclerView.setAdapter(mAdapter);
-
                 } else {
                     Log.v("error", e.toString());
                 }
             }
         });
-
-
     }
 
     @Override
@@ -147,51 +177,37 @@ public class MapListActivity extends ActionBarActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(llm);
 
+        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+
         initializeData();
 
-        Log.v("list", String.valueOf(mRoutes.size()));
-
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_maps, menu);
-        return true;
+    public void selectItem(View v, int position) {
+        RouteModel selectedRoute = mRoutes.get(position);
+        Intent intent = new Intent(MapListActivity.this, RouteDetailActivity.class);
+        intent.putExtra("selectedRoute", selectedRoute);
+        startActivity(intent);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.profile_item) {
-            Intent intent = new Intent(MapListActivity.this, NewRouteActivity.class);
-            startActivity(intent);
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
 }
 
 class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
 
     Context mContext;
-    int position = 0;
     List<RouteModel> routesCV;
     Route rt;
+    private ListClickListener mListener;
 
 
     public RVAdapter(Context context , List<RouteModel> routes) {
         this.mContext = context;
         this.routesCV = routes;
+    }
+
+    public void setListClickListener(ListClickListener listener) {
+        this.mListener = listener;
     }
 
     @Override
@@ -227,9 +243,9 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
         holder.destination.setText(routesCV.get(position).getDestination());
         holder.startingPoint.setText(routesCV.get(position).getStartingPoint());
 
-        GoogleMap thisMap = holder.map.getMap();
-        //then move map to 'location'
-        if (thisMap != null) {
+        GoogleMap gMap = holder.map.getMap();
+
+        if (gMap != null) {
 
             ArrayList<PointModel> mapPosition = routesCV.get(position).getPoints();
             ArrayList<LatLng> points = new ArrayList<LatLng>();
@@ -237,23 +253,18 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
 
 
             for (PointModel item : mapPosition) {
-
-                Log.v("lat,lng", item.getLatitude() + " , " + item.getLongitude());
                 points.add(new LatLng(item.getLatitude(),item.getLongitude()));
             }
 
-
-
-            Log.v("Points size" , " " + points.size());
             for (LatLng item : points) {
-                thisMap.addMarker(new MarkerOptions().position(item));
+                gMap.addMarker(new MarkerOptions().position(item));
             }
 
             rt = new Route();
 
-            rt.drawRoute(thisMap, mContext, new ArrayList<LatLng>(points), "en", true);
+            rt.drawRoute(gMap, mContext, new ArrayList<LatLng>(points), "en", true);
 
-            zoomMapToLatLngBounds(holder.linearlayout, thisMap, points);
+            zoomMapToLatLngBounds(holder.linearlayout, gMap, points);
         }
 
     }
@@ -261,11 +272,9 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
     @Override
     public void onViewRecycled(RouteViewHolder holder)
     {
-        // Cleanup MapView here?
         if (holder.map != null)
         {
             holder.map.getMap().clear();
-
         }
     }
 
@@ -274,7 +283,7 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
         return routesCV.size();
     }
 
-    public static class RouteViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback {
+    class RouteViewHolder extends RecyclerView.ViewHolder implements OnMapReadyCallback, View.OnClickListener {
 
         Context mContext;
         CardView cv;
@@ -282,7 +291,6 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
         TextView startingPoint;
         MapView map;
         List<RouteModel> routesCV;
-        int position = 0;
         LinearLayout linearlayout;
 
         RouteViewHolder(View itemView, List<RouteModel> routesCV, Context context) {
@@ -295,7 +303,7 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
             startingPoint = (TextView) itemView.findViewById(R.id.startingPointCV);
             map = (MapView) itemView.findViewById(R.id.map_view);
             linearlayout = (LinearLayout) itemView.findViewById(R.id.linearlayout);
-
+            itemView.setOnClickListener(this);
             map.onCreate(null);
             map.onResume();
             map.getMapAsync(this);
@@ -305,12 +313,22 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
-
+            googleMap.getUiSettings().setZoomControlsEnabled(true);
+            googleMap.getUiSettings().setAllGesturesEnabled(true);
+            googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             MapsInitializer.initialize(mContext);
 
-
-
-
         }
+
+        @Override
+        public void onClick(View v) {
+            if (mListener != null) {
+                mListener.selectItem(v , getPosition());
+            }
+        }
+    }
+
+    public interface ListClickListener {
+        void selectItem(View v, int position);
     }
 }

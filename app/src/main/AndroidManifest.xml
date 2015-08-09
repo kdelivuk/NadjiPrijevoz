@@ -36,6 +36,7 @@
         </activity>
         <activity
             android:name="kristijandelivuk.com.nadjiprijevoz.Screens.MapListActivity"
+            android:parentActivityName="kristijandelivuk.com.nadjiprijevoz.Screens.FullScreenMapActivity"
             android:label="@string/title_activity_maps" >
         </activity>
         <activity
@@ -44,10 +45,12 @@
         </activity>
         <activity
             android:name="kristijandelivuk.com.nadjiprijevoz.Screens.ProfileActivity"
+            android:parentActivityName="kristijandelivuk.com.nadjiprijevoz.Screens.FullScreenMapActivity"
             android:label="@string/title_activity_profile" >
         </activity>
         <activity
             android:name="kristijandelivuk.com.nadjiprijevoz.Screens.NewRouteActivity"
+            android:parentActivityName="kristijandelivuk.com.nadjiprijevoz.Screens.FullScreenMapActivity"
             android:label="@string/title_activity_new_route" >
         </activity>
         <activity

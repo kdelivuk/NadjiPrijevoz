@@ -27,39 +27,67 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/imageDatePickerButton"
+                    android:src="@mipmap/ic_launcher"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:textSize="@dimen/text_size"
+                    android:id="@+id/showDate"
+                    android:layout_gravity="center"/>
+
+            </LinearLayout>
+
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/textStartingLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Starting location"
-                android:textSize="22sp"/>
-
-            <EditText
-                android:id="@+id/editStartingPoint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:textSize="@dimen/text_size"/>
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/textStartingLocationPlaceholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Starting location"
+                android:textSize="@dimen/text_size"/>
+
+            <TextView
+                android:id="@+id/textDestination"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Destination"
-                android:textSize="22sp"/>
-
-            <EditText
-                android:id="@+id/editDestination"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:textSize="@dimen/text_size"/>
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/textDestinationPlaceholder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Starting location"
+                android:textSize="@dimen/text_size"/>
+
+            <TextView
+                android:id="@+id/textSpacesAvailable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Spaces Available"
-                android:textSize="22sp"/>
+                android:textSize="@dimen/text_size"/>
 
             <EditText
                 android:id="@+id/editSpacesAvailable"
+                android:enabled="true"
+                android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
@@ -67,8 +95,10 @@
                 android:id="@+id/buttonCreate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
                 android:layout_gravity="center_horizontal"
-                android:text="Create"/>
+                android:text="Calculate Route"
+                />
 
         </LinearLayout>
 

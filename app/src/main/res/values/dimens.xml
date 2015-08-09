@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="nav_drawer_width">260dp</dimen>
-
+    <dimen name="text_header_size">20sp</dimen>
+    <dimen name="text_subheader_size">16sp</dimen>
+    <dimen name="text_size">14sp</dimen>
 </resources>
 

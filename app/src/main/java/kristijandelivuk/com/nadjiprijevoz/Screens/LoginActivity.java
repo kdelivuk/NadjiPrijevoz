@@ -2,8 +2,8 @@ package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,19 +17,21 @@ import com.parse.ParseUser;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
 
-public class LoginActivity extends ActionBarActivity {
+public class LoginActivity extends AppCompatActivity {
 
-    EditText mUsername;
-    EditText mPassword;
-    TextView mTitle;
-    TextView mSubtitle;
-    Button mLogin;
-    Button mRegister;
+    private EditText mUsername;
+    private EditText mPassword;
+    private TextView mTitle;
+    private TextView mSubtitle;
+    private Button mLogin;
+    private Button mRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // Enabling Parse
 
         Parse.enableLocalDatastore(this);
 
@@ -37,6 +39,7 @@ public class LoginActivity extends ActionBarActivity {
 
         ParseUser.enableRevocableSessionInBackground();
 
+        // Fallback if user stayed logged in
 
         ParseUser currentUser = new ParseUser().getCurrentUser();
         if (currentUser != null) {
@@ -52,18 +55,18 @@ public class LoginActivity extends ActionBarActivity {
         mLogin = (Button) findViewById(R.id.loginButton);
         mRegister = (Button) findViewById(R.id.buttonRegister);
 
+        // Font
 
-        Typeface bosomFont = Typeface.createFromAsset(getAssets(), "fonts/besom.ttf");
+        Typeface robotoRegular = Typeface.createFromAsset(getAssets(), "fonts/robotoregular.ttf");
 
-        mTitle.setTypeface(bosomFont);
-        mSubtitle.setTypeface(bosomFont);
-        mUsername.setTypeface(bosomFont);
-        mPassword.setTypeface(bosomFont);
+        mTitle.setTypeface(robotoRegular);
+        mSubtitle.setTypeface(robotoRegular);
+        mUsername.setTypeface(robotoRegular);
+        mPassword.setTypeface(robotoRegular);
 
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 loginUser();
             }
         });
@@ -81,14 +84,11 @@ public class LoginActivity extends ActionBarActivity {
         String username = mUsername.getText().toString().trim();
         String password = mPassword.getText().toString().trim();
 
-        Log.v("username", username);
-        Log.v("password", password);
-
         ParseUser currentUser = new ParseUser();
         currentUser.setUsername(username);
         currentUser.setPassword(password);
 
-        currentUser.logInInBackground(username, password, new LogInCallback() {
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
             @Override
             public void done(ParseUser parseUser, ParseException e) {
 
@@ -96,17 +96,15 @@ public class LoginActivity extends ActionBarActivity {
                     Intent intent = new Intent(LoginActivity.this, FullScreenMapActivity.class);
                     startActivity(intent);
                 } else {
-                    Log.v("error", e.toString());
+                    Log.v("Log in error: ", e.toString());
                 }
 
             }
         });
-
     }
 
     private void registerUser() {
         Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
         startActivity(intent);
     }
-
 }
