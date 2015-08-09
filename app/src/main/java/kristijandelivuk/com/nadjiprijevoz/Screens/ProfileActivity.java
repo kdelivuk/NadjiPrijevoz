@@ -230,7 +230,10 @@ public class ProfileActivity extends AppCompatActivity {
                 creatorUser,
                 passangers,
                 points,
-                item.getInt("spacesAvailable")
+                item.getInt("spacesAvailable"),
+                item.getObjectId(),
+                item.getString("time"),
+                item.getString("date")
         );
 
         return route;

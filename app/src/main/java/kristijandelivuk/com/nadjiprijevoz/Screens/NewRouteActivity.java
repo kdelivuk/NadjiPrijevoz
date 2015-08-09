@@ -3,6 +3,7 @@ package kristijandelivuk.com.nadjiprijevoz.Screens;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
@@ -20,6 +21,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -63,6 +65,8 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
     private Button mButtonCreate;
     private TextView mDisplayDate;
     private ImageButton mPickDate;
+    private TextView mDisplayTime;
+    private ImageButton mPickTime;
 
     private List<Marker> routeMarkers;
     private Route rt;
@@ -92,7 +96,7 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
 
         routeIsCalculated = false;
 
-        final Calendar c = Calendar.getInstance();
+
 
         SupportMapFragment map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.create_route_google_map);
         map.getMapAsync(this);
@@ -107,6 +111,8 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
         mButtonCreate = (Button) findViewById(R.id.buttonCreate);
         mDisplayDate = (TextView) findViewById(R.id.showDate);
         mPickDate = (ImageButton) findViewById(R.id.imageDatePickerButton);
+        mDisplayTime = (TextView) findViewById(R.id.showTime);
+        mPickTime = (ImageButton) findViewById(R.id.imageTimePickerButton);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -117,6 +123,7 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View v) {
 
+                Calendar c = Calendar.getInstance();
                 int mYear = c.get(Calendar.YEAR);
                 int mMonth = c.get(Calendar.MONTH);
                 int mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -131,6 +138,26 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
                 dpd.show();
             }
         });
+
+        mPickTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Calendar c = Calendar.getInstance();
+                final int hour = c.get(Calendar.HOUR_OF_DAY);
+                int minute = c.get(Calendar.MINUTE);
+
+                TimePickerDialog tpd = new TimePickerDialog(NewRouteActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        mDisplayTime.setText(hour + ":" + minute);
+                    }
+                }, hour, minute, true);
+
+                tpd.show();
+            }
+        });
+
 
 
         routeMarkers = new ArrayList<>();
@@ -293,7 +320,10 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
                 user,
                 new ArrayList<User>(),
                 new ArrayList<PointModel>(),
-                Integer.parseInt(mNumberOfSpaces.getText().toString())
+                Integer.parseInt(mNumberOfSpaces.getText().toString()),
+                "",
+                mDisplayTime.getText().toString(),
+                mDisplayDate.getText().toString()
         );
 
         ParseObject point;

@@ -71,7 +71,7 @@ public class FullScreenMapActivity extends AppCompatActivity implements OnMapRea
                                 new MarkerOptions()
                                         .position(new LatLng(latitude, longitude))
                                         .title(title + " - " + destination)
-                                        .snippet("Start time: "));
+                                        .snippet("Start time: " +  object.getString("date") + " " +  object.getString("time")));
 
 
                         mMarkers.add(marker);

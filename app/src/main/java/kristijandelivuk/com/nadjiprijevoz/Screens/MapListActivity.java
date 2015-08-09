@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -139,7 +140,10 @@ public class MapListActivity extends AppCompatActivity implements RVAdapter.List
                                 new User("test", "test", "test", "12345", "test@test.test"),
                                 parsePassangers,
                                 points,
-                                Integer.parseInt(item.get("numberOfSpaces").toString())
+                                Integer.parseInt(item.get("numberOfSpaces").toString()),
+                                item.getObjectId(),
+                                item.get("time").toString(),
+                                item.get("date").toString()
                         );
 
 
@@ -313,7 +317,6 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
 
         @Override
         public void onMapReady(GoogleMap googleMap) {
-            googleMap.getUiSettings().setZoomControlsEnabled(true);
             googleMap.getUiSettings().setAllGesturesEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             MapsInitializer.initialize(mContext);

@@ -17,74 +17,37 @@ public class RouteModel implements Parcelable {
     private ArrayList<PointModel> mPoints;
     private int mSpacesAvailable;
     private String id;
+    private String mTime;
+    private String mDate;
 
-    public RouteModel(String destination, String startingPoint, User creator, ArrayList<User> passangers, ArrayList<PointModel> points, int spacesAvailable) {
+    public RouteModel(String destination, String startingPoint, User creator, ArrayList<User> passangers,
+                      ArrayList<PointModel> points, int spacesAvailable, String id, String time, String date) {
         mDestination = destination;
         mStartingPoint = startingPoint;
         mCreator = creator;
         mPassangers = passangers;
         mPoints = points;
         mSpacesAvailable = spacesAvailable;
+        this.id = id;
+        mTime = time;
+        mDate = date;
     }
 
-    protected RouteModel(Parcel in) {
-        mDestination = in.readString();
-        mStartingPoint = in.readString();
-        mCreator = (User) in.readValue(User.class.getClassLoader());
-        if (in.readByte() == 0x01) {
-            mPassangers = new ArrayList<User>();
-            in.readList(mPassangers, User.class.getClassLoader());
-        } else {
-            mPassangers = null;
-        }
-        if (in.readByte() == 0x01) {
-            mPoints = new ArrayList<PointModel>();
-            in.readList(mPoints, PointModel.class.getClassLoader());
-        } else {
-            mPoints = null;
-        }
-        mSpacesAvailable = in.readInt();
-        id = in.readString();
+    public String getTime() {
+        return mTime;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setTime(String time) {
+        mTime = time;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mDestination);
-        dest.writeString(mStartingPoint);
-        dest.writeValue(mCreator);
-        if (mPassangers == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mPassangers);
-        }
-        if (mPoints == null) {
-            dest.writeByte((byte) (0x00));
-        } else {
-            dest.writeByte((byte) (0x01));
-            dest.writeList(mPoints);
-        }
-        dest.writeInt(mSpacesAvailable);
-        dest.writeString(id);
+    public String getDate() {
+        return mDate;
     }
 
-    @SuppressWarnings("unused")
-    public static final Parcelable.Creator<RouteModel> CREATOR = new Parcelable.Creator<RouteModel>() {
-        @Override
-        public RouteModel createFromParcel(Parcel in) {
-            return new RouteModel(in);
-        }
-
-        @Override
-        public RouteModel[] newArray(int size) {
-            return new RouteModel[size];
-        }
-    };
+    public void setDate(String date) {
+        mDate = date;
+    }
 
     public String getId() {
         return id;
@@ -141,5 +104,68 @@ public class RouteModel implements Parcelable {
     public void setCreator(User creator) {
         mCreator = creator;
     }
+
+    protected RouteModel(Parcel in) {
+        mDestination = in.readString();
+        mStartingPoint = in.readString();
+        mCreator = (User) in.readValue(User.class.getClassLoader());
+        if (in.readByte() == 0x01) {
+            mPassangers = new ArrayList<User>();
+            in.readList(mPassangers, User.class.getClassLoader());
+        } else {
+            mPassangers = null;
+        }
+        if (in.readByte() == 0x01) {
+            mPoints = new ArrayList<PointModel>();
+            in.readList(mPoints, PointModel.class.getClassLoader());
+        } else {
+            mPoints = null;
+        }
+        mSpacesAvailable = in.readInt();
+        id = in.readString();
+        mTime = in.readString();
+        mDate = in.readString();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mDestination);
+        dest.writeString(mStartingPoint);
+        dest.writeValue(mCreator);
+        if (mPassangers == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(mPassangers);
+        }
+        if (mPoints == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(mPoints);
+        }
+        dest.writeInt(mSpacesAvailable);
+        dest.writeString(id);
+        dest.writeString(mTime);
+        dest.writeString(mDate);
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<RouteModel> CREATOR = new Parcelable.Creator<RouteModel>() {
+        @Override
+        public RouteModel createFromParcel(Parcel in) {
+            return new RouteModel(in);
+        }
+
+        @Override
+        public RouteModel[] newArray(int size) {
+            return new RouteModel[size];
+        }
+    };
 
 }
