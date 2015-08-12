@@ -80,12 +80,13 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
 
     public static List<NavigationDrawerItem> getData() {
         List<NavigationDrawerItem> navigationDrawerItemList = new ArrayList<NavigationDrawerItem>();
-        //int[] navigationDrawerIcons = (R.)
+
         String[] navigationDrawerTitles = { "New Route" , "FullScreenView" , "RecyclerView " , "Profile" , };
+        int[] navigationDrawerImages = { R.mipmap.newroute_image , R.mipmap.fullscreen_image , R.mipmap.recycler_image , R.mipmap.profile_image };
 
         for (int i = 0; i<navigationDrawerTitles.length; i++) {
 
-            NavigationDrawerItem item = new NavigationDrawerItem(navigationDrawerTitles[i], 0);
+            NavigationDrawerItem item = new NavigationDrawerItem(navigationDrawerTitles[i], navigationDrawerImages[i]);
             navigationDrawerItemList.add(item);
         }
 

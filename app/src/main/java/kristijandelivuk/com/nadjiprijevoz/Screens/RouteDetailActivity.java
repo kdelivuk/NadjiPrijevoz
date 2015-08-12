@@ -116,10 +116,12 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
     @Override
     protected void onResume() {
         super.onResume();
+
         mAdapter = new RouteDetailNavigationAdapter(RouteDetailActivity.this, mSelectedRoute.getPassangers());
         mAdapter.setOnClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(RouteDetailActivity.this));
+
     }
 
     private void loadPassangers() {
@@ -150,6 +152,7 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
                                         if (e == null) {
                                             Log.v("parseUser", parseUser.toString());
                                             mPassangers.add(parseUser);
+
                                             Log.v("size", mPassangers.size() + "");
                                         } else {
                                             Log.v("error", e.toString());
