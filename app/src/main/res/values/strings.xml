@@ -1,18 +1,18 @@
 <resources>
     <string name="app_name">Nadji Prijevoz</string>
-    <string name="title_activity_maps">Map</string>
-    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_maps">Pregled svih ruta</string>
+    <string name="title_activity_login">Login</string>
 
 
     <string name="action_settings">Settings</string>
-    <string name="title_activity_register">RegisterActivity</string>
-    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_register">Registracija</string>
+    <string name="title_activity_profile">Profil</string>
 
-    <string name="action_search">Search</string>
+    <string name="action_search">Pretraga</string>
 
     <string name="nav_item_home">Home</string>
-    <string name="nav_item_friends">Friends</string>
-    <string name="nav_item_notifications">Messages</string>
+    <string name="nav_item_friends">Prijatelji</string>
+    <string name="nav_item_notifications">Poruke</string>
 
     <!-- navigation drawer item labels  -->
     <string-array name="nav_drawer_labels">
@@ -21,14 +21,13 @@
         <item>@string/nav_item_notifications</item>
     </string-array>
 
-    <string name="title_messages">Messages</string>
-    <string name="title_friends">Friends</string>
+    <string name="title_messages">Poruke</string>
+    <string name="title_friends">Prijatelji</string>
     <string name="title_home">Home</string>
-    <string name="title_activity_new_route">NewRouteActivity</string>
+    <string name="title_activity_new_route">Nova ruta</string>
 
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_full_screen_map">FullScreenMapActivity</string>
-    <string name="title_activity_route_detail">RouteDetailActivity</string>
+    <string name="title_activity_full_screen_map">Pregled obližnjih ruta</string>
+    <string name="title_activity_route_detail">Detalji Rute</string>
 
 
     <string name="drawer_open">Open</string>

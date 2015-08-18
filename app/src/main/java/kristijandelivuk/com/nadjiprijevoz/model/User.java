@@ -14,13 +14,15 @@ public class User implements Parcelable {
     private String phoneNumber;
     private String email;
     private PointModel currentLocation;
+    private byte[] data;
 
-    public User(String username, String name, String surname, String phoneNumber, String email) {
+    public User(String username, String name, String surname, String phoneNumber, String email, byte[] data) {
         this.username = username;
         this.name = name;
         this.surname = surname;
         this.phoneNumber = phoneNumber;
         this.email = email;
+        this.data = data;
     }
 
     protected User(Parcel in) {
@@ -29,19 +31,25 @@ public class User implements Parcelable {
         surname = in.readString();
         phoneNumber = in.readString();
         email = in.readString();
+        data = new byte[in.readInt()];
+        in.readByteArray(data);
         currentLocation = (PointModel) in.readValue(PointModel.class.getClassLoader());
     }
 
+    @Override
     public int describeContents() {
         return 0;
     }
 
+    @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(username);
         dest.writeString(name);
         dest.writeString(surname);
         dest.writeString(phoneNumber);
         dest.writeString(email);
+        dest.writeInt(data.length);
+        dest.writeByteArray(data);
         dest.writeValue(currentLocation);
     }
 
@@ -57,6 +65,22 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    public PointModel getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setCurrentLocation(PointModel currentLocation) {
+        this.currentLocation = currentLocation;
+    }
+
+    public byte[] getData() {
+        return data;
+    }
+
+    public void setData(byte[] data) {
+        this.data = data;
+    }
 
     public String getUsername() {
         return username;

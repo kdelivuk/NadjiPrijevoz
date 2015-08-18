@@ -35,6 +35,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
@@ -306,12 +307,21 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
 
         ParseUser currentUser = ParseUser.getCurrentUser();
 
+        ParseFile fileObject = (ParseFile) currentUser.get("profileImage");
+        byte[] data = new byte[0];
+        try {
+            data = fileObject.getData();
+        } catch (com.parse.ParseException e) {
+            e.printStackTrace();
+        }
+
         User user = new User(
                 currentUser.getUsername(),
                 currentUser.get("name").toString(),
                 currentUser.get("surname").toString(),
                 currentUser.get("phone").toString(),
-                currentUser.getEmail()
+                currentUser.getEmail(),
+                data
         );
 
         RouteModel mNewRoute = new RouteModel(

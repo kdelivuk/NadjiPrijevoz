@@ -2,7 +2,7 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#81C784"
+                android:background="@color/colorPrimaryDark"
                 tools:context="kristijandelivuk.com.nadjiprijevoz.Screens.LoginActivity">
 
 
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Find my ride"
+        android:text="Nađi prijevoz"
         android:id="@+id/titleLabel"
         android:layout_marginTop="60dp"
         android:textSize="@dimen/text_header_size"
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="- Free app for finding rides -"
+        android:text="Aplikacija za pronalazak jeftinog prijevoza"
         android:id="@+id/subtitleLabel"
         android:textSize="@dimen/text_subheader_size"
         android:layout_below="@+id/titleLabel"
@@ -55,20 +55,21 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Prijavi se"
         android:id="@+id/loginButton"
         android:textSize="@dimen/text_size"
-        android:layout_marginBottom="50dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/editPassword"/>
+        android:layout_above="@+id/buttonRegister"
+        android:layout_alignLeft="@+id/titleLabel"
+        android:layout_alignEnd="@+id/buttonRegister"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="Registriraj se"
         android:textSize="@dimen/text_size"
         android:id="@+id/buttonRegister"
-        android:layout_alignTop="@+id/loginButton"
-        android:layout_alignEnd="@+id/editPassword"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/titleLabel"
+        android:layout_marginBottom="35dp"/>
 
 </RelativeLayout>

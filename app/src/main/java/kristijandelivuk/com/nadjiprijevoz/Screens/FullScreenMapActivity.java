@@ -21,8 +21,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
+import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -129,6 +131,11 @@ public class FullScreenMapActivity extends AppCompatActivity implements OnMapRea
             Toast.makeText(FullScreenMapActivity.this, "There is currently no connectivity" , Toast.LENGTH_LONG).show();
         }
         else {
+
+            ParseGeoPoint point = new ParseGeoPoint(lastLocation.getLatitude(), lastLocation.getLongitude());
+            ParseUser currentUser = ParseUser.getCurrentUser();
+            currentUser.put("location", point);
+            currentUser.saveInBackground();
 
             mGoogleMap.animateCamera(CameraUpdateFactory.zoomIn());
 

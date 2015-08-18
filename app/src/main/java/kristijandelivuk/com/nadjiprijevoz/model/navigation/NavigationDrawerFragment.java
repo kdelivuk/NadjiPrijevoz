@@ -3,6 +3,8 @@ package kristijandelivuk.com.nadjiprijevoz.model.navigation;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.parse.ParseFile;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -81,7 +85,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public static List<NavigationDrawerItem> getData() {
         List<NavigationDrawerItem> navigationDrawerItemList = new ArrayList<NavigationDrawerItem>();
 
-        String[] navigationDrawerTitles = { "New Route" , "FullScreenView" , "RecyclerView " , "Profile" , };
+        String[] navigationDrawerTitles = { "Nova ruta" , "Pregled obližnjih ruta" , "Pregled svih ruta " , "Profil" , };
         int[] navigationDrawerImages = { R.mipmap.newroute_image , R.mipmap.fullscreen_image , R.mipmap.recycler_image , R.mipmap.profile_image };
 
         for (int i = 0; i<navigationDrawerTitles.length; i++) {
@@ -151,23 +155,40 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public void selectedItem(View view, int position) {
         Log.v("position" , position + "");
         switch (position) {
-            case 0:
+            case 1:
                 startActivity(new Intent(getActivity() , NewRouteActivity.class));
                 break;
-            case 1:
+            case 2:
                 startActivity(new Intent(getActivity() , FullScreenMapActivity.class));
                 break;
-            case 2:
+            case 3:
                 startActivity(new Intent(getActivity() , MapListActivity.class));
                 break;
-            case 3:
+            case 4:
                 Intent intent = new Intent(getActivity() , ProfileActivity.class);
+
+                ParseQuery query = ParseUser.getCurrentUser().getQuery();
+                ParseUser user = null;
+                try {
+                    user = (ParseUser) query.getFirst();
+                } catch (com.parse.ParseException e) {
+                    e.printStackTrace();
+                }
+                ParseFile fileObject = (ParseFile) user.get("profileImage");
+                byte[] data = new byte[0];
+                try {
+                    data = fileObject.getData();
+                } catch (com.parse.ParseException e) {
+                    e.printStackTrace();
+                }
+
                 intent.putExtra("targetUser" , new User(
                         ParseUser.getCurrentUser().getUsername(),
                         ParseUser.getCurrentUser().getString("name"),
                         ParseUser.getCurrentUser().getString("surname"),
                         ParseUser.getCurrentUser().getString("phone"),
-                        ParseUser.getCurrentUser().getEmail()
+                        ParseUser.getCurrentUser().getEmail(),
+                        data
                 ));
                 startActivity(intent);
                 break;

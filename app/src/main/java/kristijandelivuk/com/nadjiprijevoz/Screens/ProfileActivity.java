@@ -1,5 +1,8 @@
 package kristijandelivuk.com.nadjiprijevoz.Screens;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -7,13 +10,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.RatingBar;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -27,21 +28,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
-import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
+import kristijandelivuk.com.nadjiprijevoz.helper.ParseCommunicator;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
 import kristijandelivuk.com.nadjiprijevoz.model.navigation.NavigationDrawerFragment;
 
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ProfileMapAdapter.ListClickListener {
 
     private TextView mUserNameAndSurname;
     private TextView mUserPhoneNumber;
     private TextView mUserEmail;
     private Toolbar mToolbar;
     private List<RouteModel> mRoutes;
+    private ImageView mProfileImage;
     private RecyclerView mRecyclerView;
-    private RVAdapter mAdapter;
+    private ProfileMapAdapter mProfileMapAdapter;
     private User user;
     private String userId;
 
@@ -63,7 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
         mUserNameAndSurname = (TextView) findViewById(R.id.textNameSurname);
         mUserPhoneNumber = (TextView) findViewById(R.id.textPhone);
         mUserEmail = (TextView) findViewById(R.id.textEmail);
-
+        mProfileImage = (ImageView) findViewById(R.id.imageProfile);
 
 
         mRecyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
@@ -106,6 +108,13 @@ public class ProfileActivity extends AppCompatActivity {
             mUserEmail.setText(user.getEmail());
             mUserPhoneNumber.setText(user.getPhoneNumber());
             mUserNameAndSurname.setText(user.getName() + " " + user.getSurname());
+
+
+            byte[] data = user.getData();
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+            mProfileImage.setImageBitmap(bitmap);
         }
     }
 
@@ -134,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                                     if (id.equals(userId)) {
                                         Log.v("true" , "true");
-                                        mRoutes.add(convertToRouteModel(item));
+                                        mRoutes.add(ParseCommunicator.getInstance().convertToRouteModel(item));
                                         Log.v("mroutes" , mRoutes.size() + "");
                                     }
 
@@ -146,9 +155,9 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
 
-                    mAdapter = new RVAdapter(ProfileActivity.this, mRoutes);
-
-                    mRecyclerView.setAdapter(mAdapter);
+                    mProfileMapAdapter = new ProfileMapAdapter(ProfileActivity.this, mRoutes);
+                    mProfileMapAdapter.setListClickListener(ProfileActivity.this);
+                    mRecyclerView.setAdapter(mProfileMapAdapter);
                 } else {
                     Log.v("error", e.toString());
                 }
@@ -156,86 +165,12 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private RouteModel convertToRouteModel(ParseObject item) {
 
-        ParseUser creator = item.getParseUser("creator");
-
-        User creatorUser = new User(
-          creator.getUsername(),
-          creator.getString("name"),
-          creator.getString("surname"),
-          creator.getString("phone"),
-          creator.getEmail()
-        );
-
-        ArrayList<User> passangers = new ArrayList<>();
-        JSONArray jsonArrayPassangers = item.getJSONArray("passangers");
-
-        if (jsonArrayPassangers != null) {
-            for (int i = 0; i < jsonArrayPassangers.length(); i++) {
-
-                try {
-                    JSONObject object = jsonArrayPassangers.getJSONObject(i);
-                    Log.v("objectID", object.getString("objectId"));
-                    String id = object.getString("objectId");
-
-                    ParseQuery<ParseUser> query = ParseUser.getQuery();
-                    query.whereEqualTo("objectId", id);
-                    ParseUser parseUser = query.getFirst();
-
-                    passangers.add(new User(
-                            parseUser.getUsername(),
-                            parseUser.getString("name"),
-                            parseUser.getString("surname"),
-                            parseUser.getString("phone"),
-                            parseUser.getEmail()
-                    ));
-                } catch (ParseException e1) {
-                    e1.printStackTrace();
-                } catch (JSONException e1) {
-                    e1.printStackTrace();
-                }
-
-
-
-            }
-        }
-
-        JSONArray jsonArrayPoints = item.getJSONArray("points");
-        final ArrayList<PointModel> points = new ArrayList<PointModel>();
-
-        for (int i = 0; i < jsonArrayPoints.length(); i++) {
-
-            try {
-                JSONObject object = jsonArrayPoints.getJSONObject(i);
-                //Log.v("objectID", object.getString("objectId"));
-
-                ParseQuery query = ParseQuery.getQuery("Point");
-                query.whereEqualTo("objectId", object.getString("objectId"));
-                ParseObject pointP = query.getFirst();
-                //Log.v("lat", pointP.get("lat").toString());
-                //Log.v("lng", pointP.get("lng").toString());
-                points.add(new PointModel(pointP.getDouble("lat"), pointP.getDouble("lng")));
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            } catch (ParseException e1) {
-                e1.printStackTrace();
-            }
-
-        }
-
-        RouteModel route = new RouteModel(
-                item.getString("destination"),
-                item.getString("startingPoint"),
-                creatorUser,
-                passangers,
-                points,
-                item.getInt("spacesAvailable"),
-                item.getObjectId(),
-                item.getString("time"),
-                item.getString("date")
-        );
-
-        return route;
+    @Override
+    public void selectItem(View v, int position) {
+        RouteModel selectedRoute = mRoutes.get(position);
+        Intent intent = new Intent(ProfileActivity.this, RouteDetailActivity.class);
+        intent.putExtra("selectedRoute", selectedRoute);
+        startActivity(intent);
     }
 }

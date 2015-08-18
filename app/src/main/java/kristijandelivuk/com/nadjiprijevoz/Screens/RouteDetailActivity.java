@@ -7,8 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
@@ -20,10 +18,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -38,7 +39,6 @@ import java.util.ArrayList;
 import kristijandelivuk.com.nadjiprijevoz.R;
 import kristijandelivuk.com.nadjiprijevoz.helper.Route;
 import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
-import kristijandelivuk.com.nadjiprijevoz.model.RouteDetailNavigationAdapter;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
 
@@ -60,6 +60,7 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
     // routes
     private RouteModel mSelectedRoute;
     private ArrayList<LatLng> mPoints;
+    private ArrayList<LatLng> mUserPositions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +87,7 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
 
 
         mPoints = new ArrayList<LatLng>();
+        mUserPositions = new ArrayList<>();
 
         Intent intent = getIntent();
         mSelectedRoute = (RouteModel) intent.getParcelableExtra("selectedRoute");
@@ -153,7 +155,16 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
                                             Log.v("parseUser", parseUser.toString());
                                             mPassangers.add(parseUser);
 
-                                            Log.v("size", mPassangers.size() + "");
+                                            mGoogleMap.addMarker(
+                                                new MarkerOptions()
+                                                        .position(new LatLng(
+                                                                parseUser.getParseGeoPoint("location").getLatitude(),
+                                                                parseUser.getParseGeoPoint("location").getLongitude()))
+                                                        .title("Passanger: " + parseUser.getString("name") + " " + parseUser.getString("surname"))
+                                                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.passanger_icon))
+                                            );
+
+
                                         } else {
                                             Log.v("error", e.toString());
                                         }
@@ -166,6 +177,8 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
                             }
 
                         }
+
+
                     }
                 } else {
                     Log.v("error", e.toString());
@@ -264,6 +277,7 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
         zoomMapToLatLngBounds(mLayout, mGoogleMap, mPoints);
 
 
+
     }
 
     private void zoomMapToLatLngBounds(final LinearLayout layout,final GoogleMap mMap, final ArrayList<LatLng> bounds){
@@ -292,12 +306,22 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
     public void selectedItem(View view, int position) {
         Log.v("position" , position + "");
         Intent intent = new Intent(RouteDetailActivity.this , ProfileActivity.class);
+
+        ParseFile fileObject = (ParseFile) mPassangers.get(position).get("profileImage");
+        byte[] data = new byte[0];
+        try {
+            data = fileObject.getData();
+        } catch (com.parse.ParseException e) {
+            e.printStackTrace();
+        }
+
         intent.putExtra("targetUser" , new User(
                 mPassangers.get(position).getUsername(),
                 mPassangers.get(position).getString("name"),
                 mPassangers.get(position).getString("surname"),
                 mPassangers.get(position).getString("phone"),
-                mPassangers.get(position).getEmail()
+                mPassangers.get(position).getEmail(),
+                data
         ));
         startActivity(intent);
     }

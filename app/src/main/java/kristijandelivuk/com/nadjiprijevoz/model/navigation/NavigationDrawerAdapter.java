@@ -1,15 +1,25 @@
 package kristijandelivuk.com.nadjiprijevoz.model.navigation;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.media.ImageReader;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.parse.GetDataCallback;
+import com.parse.ParseFile;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,19 +49,17 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
         if (viewType == TYPE_ITEM) {
             View view = mLayoutInflater.inflate(R.layout.navigation_item_row, parent, false);
 
-            NavigationViewHolder holder = new NavigationViewHolder(view,viewType); //Creating ViewHolder and passing the object of type view
+            NavigationViewHolder holder = new NavigationViewHolder(view,viewType);
 
-            return holder; // Returning the created object
-
-            //inflate your layout and pass it to view holder
+            return holder;
 
         } else if (viewType == TYPE_HEADER) {
 
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.navigation_header_item,parent,false); //Inflating the layout
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.navigation_header_item,parent,false);
 
-            NavigationViewHolder vhHeader = new NavigationViewHolder(view,viewType); //Creating ViewHolder and passing the object of type view
+            NavigationViewHolder vhHeader = new NavigationViewHolder(view,viewType);
 
-            return vhHeader; //returning the object created
+            return vhHeader;
 
 
         }
@@ -81,19 +89,37 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
     }
 
     @Override
-    public void onBindViewHolder(NavigationViewHolder holder, int position) {
+    public void onBindViewHolder( NavigationViewHolder holder, int position) {
 
         if(holder.holderId ==1) {
-            holder.mText.setText(mNavigationItems.get(position - 1).getTitle()); // Setting the Text with the array of our Titles
-            holder.mImageView.setImageResource(mNavigationItems.get(position - 1).getResId());// Settimg the image with array of our icons
-        }
-        else{
+            holder.mText.setText(mNavigationItems.get(position - 1).getTitle());
+            holder.mImageView.setImageResource(mNavigationItems.get(position - 1).getResId());
+        } else {
+            ParseQuery query = ParseUser.getCurrentUser().getQuery();
+            ParseUser user = null;
+            try {
+                user = (ParseUser) query.getFirst();
+            } catch (com.parse.ParseException e) {
+                e.printStackTrace();
+            }
+            ParseFile fileObject = (ParseFile) user.get("profileImage");
+            byte[] data = new byte[0];
+            try {
+                data = fileObject.getData();
+            } catch (com.parse.ParseException e) {
+                e.printStackTrace();
+            }
 
-            //holder.profile.setImageResource(R.mipmap.profile_icon);           // Similarly we set the resources for header view
-            //holder.Name.setText(ParseUser.getCurrentUser().getString("name"));
-            //holder.email.setText(ParseUser.getCurrentUser().getString("email"));
-        }
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data , 0, data.length);
 
+            holder.profile.setImageBitmap(bitmap);
+
+
+            holder.Name.setText(ParseUser.getCurrentUser().getString("name"));
+            holder.email.setText(ParseUser.getCurrentUser().getString("email"));
+
+
+        }
     }
 
     class NavigationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -118,10 +144,10 @@ public class NavigationDrawerAdapter extends RecyclerView.Adapter<NavigationDraw
             } else{
 
 
-                Name = (TextView) itemView.findViewById(R.id.name);         // Creating Text View object from header.xml for name
-                email = (TextView) itemView.findViewById(R.id.email);       // Creating Text View object from header.xml for email
-                profile = (ImageView) itemView.findViewById(R.id.circleView);// Creating Image view object from header.xml for profile pic
-                holderId = 0;                                                // Setting holder id = 0 as the object being populated are of type header view
+                Name = (TextView) itemView.findViewById(R.id.name);
+                email = (TextView) itemView.findViewById(R.id.email);
+                profile = (ImageView) itemView.findViewById(R.id.circleView);
+                holderId = 0;
             }
 
         }

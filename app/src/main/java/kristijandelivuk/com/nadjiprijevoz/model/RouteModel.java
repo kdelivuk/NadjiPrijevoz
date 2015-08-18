@@ -20,6 +20,7 @@ public class RouteModel implements Parcelable {
     private String mTime;
     private String mDate;
 
+
     public RouteModel(String destination, String startingPoint, User creator, ArrayList<User> passangers,
                       ArrayList<PointModel> points, int spacesAvailable, String id, String time, String date) {
         mDestination = destination;

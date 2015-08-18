@@ -2,17 +2,9 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#81C784"
+                android:background="@color/colorPrimary"
                 tools:context="kristijandelivuk.com.nadjiprijevoz.Screens.RegisterActivity">
 
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
 
     <Button
         android:id="@+id/buttonRegister"
@@ -64,7 +56,7 @@
         android:layout_above="@+id/editPhone"
         android:layout_alignStart="@+id/editPhone"
         android:textSize="@dimen/text_size"
-        android:text="phone"
+        android:text="telefon"
         android:textColor="#FFFFFF"/>
 
     <EditText
@@ -85,7 +77,7 @@
         android:textSize="@dimen/text_size"
         android:layout_above="@+id/editPassword"
         android:layout_alignStart="@+id/editPassword"
-        android:text="password"
+        android:text="lozinka"
         android:textColor="#FFFFFF"/>
 
     <EditText
@@ -106,7 +98,7 @@
         android:layout_above="@+id/editName"
         android:textSize="@dimen/text_size"
         android:layout_alignStart="@+id/editName"
-        android:text="name"
+        android:text="ime"
         android:textColor="#FFFFFF"/>
 
     <EditText
@@ -127,11 +119,8 @@
         android:textSize="@dimen/text_size"
         android:layout_above="@+id/editSurname"
         android:layout_alignStart="@+id/editSurname"
-        android:text="surname"
+        android:text="prezime"
         android:textColor="#FFFFFF"/>
 
-        </RelativeLayout>
-
-    </ScrollView>
 
 </RelativeLayout>

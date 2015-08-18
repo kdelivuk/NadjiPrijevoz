@@ -30,6 +30,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -116,13 +117,20 @@ public class MapListActivity extends AppCompatActivity implements RVAdapter.List
                                     ParseQuery<ParseUser> query = ParseUser.getQuery();
                                     query.whereEqualTo("objectId", id);
                                     ParseUser parseUser = query.getFirst();
-
+                                    ParseFile fileObject = (ParseFile) user.get("profileImage");
+                                    byte[] data = new byte[0];
+                                    try {
+                                        data = fileObject.getData();
+                                    } catch (com.parse.ParseException ex) {
+                                        ex.printStackTrace();
+                                    }
                                     parsePassangers.add(new User(
                                             parseUser.getUsername(),
                                             parseUser.getString("name"),
                                             parseUser.getString("surname"),
                                             parseUser.getString("phone"),
-                                            parseUser.getEmail()
+                                            parseUser.getEmail(),
+                                            data
                                     ));
                                 } catch (ParseException e1) {
                                     e1.printStackTrace();
@@ -137,7 +145,7 @@ public class MapListActivity extends AppCompatActivity implements RVAdapter.List
                         RouteModel route = new RouteModel(
                                 item.get("destination").toString(),
                                 item.get("startingPoint").toString(),
-                                new User("test", "test", "test", "12345", "test@test.test"),
+                                new User("test", "test", "test", "12345", "test@test.test" ,"Working at Parse is great!".getBytes()),
                                 parsePassangers,
                                 points,
                                 Integer.parseInt(item.get("numberOfSpaces").toString()),

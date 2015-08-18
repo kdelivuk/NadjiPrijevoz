@@ -36,7 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageDatePickerButton"
-                    android:src="@mipmap/fullscreen_image"/>
+                    android:src="@mipmap/date_picker_hdpi"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/imageTimePickerButton"
-                    android:src="@mipmap/fullscreen_image"/>
+                    android:src="@mipmap/time_picker_hdpi"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -72,38 +72,10 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textStartingLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Starting location"
-                android:textSize="@dimen/text_size"/>
-
-            <TextView
-                android:id="@+id/textStartingLocationPlaceholder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Starting location"
-                android:textSize="@dimen/text_size"/>
-
-            <TextView
-                android:id="@+id/textDestination"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Destination"
-                android:textSize="@dimen/text_size"/>
-
-            <TextView
-                android:id="@+id/textDestinationPlaceholder"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Starting location"
-                android:textSize="@dimen/text_size"/>
-
-            <TextView
                 android:id="@+id/textSpacesAvailable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Spaces Available"
+                android:text="Slobodnih mjesta:"
                 android:textSize="@dimen/text_size"/>
 
             <EditText
@@ -112,6 +84,38 @@
                 android:textSize="@dimen/text_size"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="9">
+
+                <TextView
+                    android:id="@+id/textStartingLocationPlaceholder"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="4"/>
+
+                <TextView
+                    android:id="@+id/textDestination"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="-"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+
+                <TextView
+                    android:id="@+id/textDestinationPlaceholder"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size"
+                    android:layout_weight="4"/>
+            </LinearLayout>
 
             <Button
                 android:id="@+id/buttonCreate"

@@ -1,4 +1,4 @@
-package kristijandelivuk.com.nadjiprijevoz.model;
+package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
+import kristijandelivuk.com.nadjiprijevoz.model.User;
 
 /**
  * Created by kdelivuk on 08/08/15.
