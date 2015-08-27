@@ -57,12 +57,16 @@ public class LoginActivity extends AppCompatActivity {
 
         // Font
 
-        Typeface robotoRegular = Typeface.createFromAsset(getAssets(), "fonts/robotoregular.ttf");
+        Typeface choplin = Typeface.createFromAsset(getAssets(), "fonts/Choplin.otf");
+        Typeface gidole = Typeface.createFromAsset(getAssets(), "fonts/Gidole_Regular.ttf");
 
-        mTitle.setTypeface(robotoRegular);
-        mSubtitle.setTypeface(robotoRegular);
-        mUsername.setTypeface(robotoRegular);
-        mPassword.setTypeface(robotoRegular);
+        mTitle.setTypeface(choplin);
+
+        mSubtitle.setTypeface(gidole);
+        mUsername.setTypeface(gidole);
+        mPassword.setTypeface(gidole);
+        mLogin.setTypeface(gidole);
+        mRegister.setTypeface(gidole);
 
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override

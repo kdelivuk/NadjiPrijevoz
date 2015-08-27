@@ -85,7 +85,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationDraw
     public static List<NavigationDrawerItem> getData() {
         List<NavigationDrawerItem> navigationDrawerItemList = new ArrayList<NavigationDrawerItem>();
 
-        String[] navigationDrawerTitles = { "Nova ruta" , "Pregled obližnjih ruta" , "Pregled svih ruta " , "Profil" , };
+        String[] navigationDrawerTitles = { "Nova ruta" , "Pregled obližnjih ruta" , "Pregled svih ruta" , "Profil" , };
         int[] navigationDrawerImages = { R.mipmap.newroute_image , R.mipmap.fullscreen_image , R.mipmap.recycler_image , R.mipmap.profile_image };
 
         for (int i = 0; i<navigationDrawerTitles.length; i++) {

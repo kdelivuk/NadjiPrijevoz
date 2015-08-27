@@ -1,11 +1,15 @@
 package kristijandelivuk.com.nadjiprijevoz.Screens;
 
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,6 +25,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -31,6 +36,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
+import kristijandelivuk.com.nadjiprijevoz.helper.ParseCommunicator;
+import kristijandelivuk.com.nadjiprijevoz.helper.TypefaceSpan;
+import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.navigation.NavigationDrawerFragment;
 
 
@@ -42,6 +50,7 @@ public class FullScreenMapActivity extends AppCompatActivity implements OnMapRea
     private GoogleApiClient mGoogleApiClient;
     private GoogleMap mGoogleMap;
     private List<Marker> mMarkers;
+    private boolean doubleClickIndicator;
 
     // GoogleApiClient
 
@@ -64,6 +73,7 @@ public class FullScreenMapActivity extends AppCompatActivity implements OnMapRea
                 if (e == null) {
 
                     for (ParseObject object : routeObjects) {
+                        String id = object.getObjectId().toString();
                         double longitude = object.getParseGeoPoint("startingPointGeo").getLongitude();
                         double latitude = object.getParseGeoPoint("startingPointGeo").getLatitude();
                         String title = object.getString("startingPoint");
@@ -72,12 +82,11 @@ public class FullScreenMapActivity extends AppCompatActivity implements OnMapRea
                         Marker marker = mGoogleMap.addMarker(
                                 new MarkerOptions()
                                         .position(new LatLng(latitude, longitude))
-                                        .title(title + " - " + destination)
-                                        .snippet("Start time: " +  object.getString("date") + " " +  object.getString("time")));
+                                        .title("#id: " + id)
+                                        .snippet(title + " - " + destination + "\nStart date: " + object.getString("date") + "\nStart time: " + object.getString("time")));
 
 
                         mMarkers.add(marker);
-
 
                     }
                 }
@@ -93,6 +102,12 @@ public class FullScreenMapActivity extends AppCompatActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_full_screen_map);
 
+        SpannableString s = new SpannableString("Pregled obliznjih ruta");
+        s.setSpan(new TypefaceSpan(this, "Choplin.otf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        doubleClickIndicator = false;
+
         mMarkers = new ArrayList<>();
         buildGoogleApiClient();
 
@@ -105,6 +120,7 @@ public class FullScreenMapActivity extends AppCompatActivity implements OnMapRea
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(s);
 
         NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
         drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
@@ -118,6 +134,38 @@ public class FullScreenMapActivity extends AppCompatActivity implements OnMapRea
         mGoogleMap.getUiSettings().setAllGesturesEnabled(true);
         mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
         getMarkersFromParse();
+
+        mGoogleMap.setInfoWindowAdapter(new PopupAdapter(getLayoutInflater(), this));
+
+        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                if (doubleClickIndicator == false) {
+                    doubleClickIndicator = true;
+                } else {
+                    doubleClickIndicator = false;
+                    String selected = marker.getTitle().toString().substring(5);
+
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Route");
+                    query.whereEqualTo("objectId", selected);
+                    query.getFirstInBackground(new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject parseObject, com.parse.ParseException e) {
+
+                            RouteModel selectedRoute = ParseCommunicator.getInstance().convertToRouteModel(parseObject);
+
+                            Intent intent = new Intent(FullScreenMapActivity.this, RouteDetailActivity.class);
+                            intent.putExtra("selectedRoute", selectedRoute);
+                            startActivity(intent);
+
+                        }
+                    });
+                }
+
+                return false;
+            }
+        });
     }
 
     @Override

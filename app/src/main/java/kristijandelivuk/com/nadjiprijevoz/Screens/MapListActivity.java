@@ -2,6 +2,7 @@ package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,8 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -44,6 +47,7 @@ import java.util.List;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
 import kristijandelivuk.com.nadjiprijevoz.helper.Route;
+import kristijandelivuk.com.nadjiprijevoz.helper.TypefaceSpan;
 import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
@@ -178,11 +182,15 @@ public class MapListActivity extends AppCompatActivity implements RVAdapter.List
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
 
+        SpannableString s = new SpannableString("Pregled svih ruta");
+        s.setSpan(new TypefaceSpan(this, "Choplin.otf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        getSupportActionBar().setTitle(s);
 
         mRecyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
 
@@ -239,30 +247,27 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
 
         final LatLngBounds boundsfinal = boundsBuilder.build();
 
-        ViewTreeObserver vto = layout.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressWarnings("deprecation")
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
-            public void onGlobalLayout() {
-                layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            public void onMapLoaded() {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsfinal, 25));
             }
         });
 
+
+
     }
     @Override
     public void onBindViewHolder(RouteViewHolder holder, int position) {
-        holder.destination.setText(routesCV.get(position).getDestination());
+        holder.destination.setText(" - " + routesCV.get(position).getDestination());
         holder.startingPoint.setText(routesCV.get(position).getStartingPoint());
-
+        holder.startingDateAndTime.setText(routesCV.get(position).getDate() + "  " + routesCV.get(position).getTime());
         GoogleMap gMap = holder.map.getMap();
 
         if (gMap != null) {
 
             ArrayList<PointModel> mapPosition = routesCV.get(position).getPoints();
             ArrayList<LatLng> points = new ArrayList<LatLng>();
-
-
 
             for (PointModel item : mapPosition) {
                 points.add(new LatLng(item.getLatitude(),item.getLongitude()));
@@ -275,7 +280,8 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
             rt = new Route();
 
             rt.drawRoute(gMap, mContext, new ArrayList<LatLng>(points), "en", true);
-
+            Log.v("ZZOM" , points + "");
+            Log.v("ZZOMM" , gMap + "");
             zoomMapToLatLngBounds(holder.linearlayout, gMap, points);
         }
 
@@ -301,6 +307,7 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
         CardView cv;
         TextView destination;
         TextView startingPoint;
+        TextView startingDateAndTime;
         MapView map;
         List<RouteModel> routesCV;
         LinearLayout linearlayout;
@@ -308,14 +315,24 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
         RouteViewHolder(View itemView, List<RouteModel> routesCV, Context context) {
             super(itemView);
 
+            Typeface gidole = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Gidole_Regular.ttf");
+
             mContext = context;
             this.routesCV = routesCV;
             cv = (CardView) itemView.findViewById(R.id.cv);
             destination = (TextView) itemView.findViewById(R.id.destinationCV);
             startingPoint = (TextView) itemView.findViewById(R.id.startingPointCV);
+            startingDateAndTime = (TextView) itemView.findViewById(R.id.textDateAndTimeCV);
+            destination.setTypeface(gidole);
+            startingPoint.setTypeface(gidole);
+            startingDateAndTime.setTypeface(gidole);
+
             map = (MapView) itemView.findViewById(R.id.map_view);
             linearlayout = (LinearLayout) itemView.findViewById(R.id.linearlayout);
+
             itemView.setOnClickListener(this);
+
+
             map.onCreate(null);
             map.onResume();
             map.getMapAsync(this);
@@ -328,7 +345,6 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
             googleMap.getUiSettings().setAllGesturesEnabled(true);
             googleMap.getUiSettings().setMyLocationButtonEnabled(true);
             MapsInitializer.initialize(mContext);
-
         }
 
         @Override

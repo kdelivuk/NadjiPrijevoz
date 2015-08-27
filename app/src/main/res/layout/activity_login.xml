@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Nađi prijevoz"
+        android:text="NADI PRIJEVOZ"
         android:id="@+id/titleLabel"
         android:layout_marginTop="60dp"
         android:textSize="@dimen/text_header_size"
@@ -56,20 +56,31 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Prijavi se"
+        android:background="@drawable/primary_round"
+        android:padding="5dp"
+        android:textColor="#FFFFFF"
+        android:translationZ="1dp"
+        android:elevation="1dp"
         android:id="@+id/loginButton"
         android:textSize="@dimen/text_size"
         android:layout_above="@+id/buttonRegister"
-        android:layout_alignLeft="@+id/titleLabel"
+        android:layout_marginBottom="5dp"
+        android:layout_alignStart="@+id/buttonRegister"
         android:layout_alignEnd="@+id/buttonRegister"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Registriraj se"
+        android:background="@drawable/primary_round"
+        android:padding="5dp"
+        android:textColor="#FFFFFF"
+        android:translationZ="1dp"
+        android:elevation="1dp"
         android:textSize="@dimen/text_size"
         android:id="@+id/buttonRegister"
         android:layout_alignParentBottom="true"
-        android:layout_alignStart="@+id/titleLabel"
-        android:layout_marginBottom="35dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"/>
 
 </RelativeLayout>

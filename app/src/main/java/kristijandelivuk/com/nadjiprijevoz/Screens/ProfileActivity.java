@@ -1,5 +1,6 @@
 package kristijandelivuk.com.nadjiprijevoz.Screens;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -29,6 +32,7 @@ import java.util.List;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
 import kristijandelivuk.com.nadjiprijevoz.helper.ParseCommunicator;
+import kristijandelivuk.com.nadjiprijevoz.helper.TypefaceSpan;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
 import kristijandelivuk.com.nadjiprijevoz.model.navigation.NavigationDrawerFragment;
@@ -54,13 +58,15 @@ public class ProfileActivity extends AppCompatActivity implements ProfileMapAdap
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
-
+        SpannableString s = new SpannableString("Profil");
+        s.setSpan(new TypefaceSpan(this, "Choplin.otf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         user = getIntent().getParcelableExtra("targetUser");
         Log.v("username", user.getUsername());
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        getSupportActionBar().setTitle(s);
 
         mUserNameAndSurname = (TextView) findViewById(R.id.textNameSurname);
         mUserPhoneNumber = (TextView) findViewById(R.id.textPhone);

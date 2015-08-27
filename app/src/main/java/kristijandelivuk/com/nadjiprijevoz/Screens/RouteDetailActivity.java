@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
 import kristijandelivuk.com.nadjiprijevoz.helper.Route;
+import kristijandelivuk.com.nadjiprijevoz.helper.TypefaceSpan;
 import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
@@ -69,9 +72,13 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
 
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
+        SpannableString s = new SpannableString("Detalji rute");
+        s.setSpan(new TypefaceSpan(this, "Choplin.otf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        getSupportActionBar().setTitle(s);
 
         mRecyclerView = (RecyclerView)findViewById(R.id.passangers_recycler_view);
 
@@ -94,7 +101,7 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
 
         mStartingPoint.setText(mSelectedRoute.getStartingPoint());
         mDestination.setText(mSelectedRoute.getDestination());
-        mSpacesAvailable.setText(String.valueOf(mSelectedRoute.getSpacesAvailable()));
+
 
         for (PointModel item : mSelectedRoute.getPoints()) {
             Log.v("point" , item.getLatitude() + " " + item.getLongitude());
@@ -177,8 +184,7 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
                             }
 
                         }
-
-
+                        mSpacesAvailable.setText(String.valueOf(mSelectedRoute.getSpacesAvailable() - mPassangers.size()));
                     }
                 } else {
                     Log.v("error", e.toString());
@@ -233,6 +239,7 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
 
                     mPassangers.add(ParseUser.getCurrentUser());
                     Log.v("size", mPassangers.size() + "");
+                    loadPassangers();
 
                 } else {
                     Log.v("error", e.toString());

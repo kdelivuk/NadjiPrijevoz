@@ -14,7 +14,12 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
         android:textSize="@dimen/text_size"
-        android:text="Register"/>
+        android:background="@drawable/primary_round_alt"
+        android:padding="5dp"
+        android:textColor="#FFFFFF"
+        android:translationZ="1dp"
+        android:elevation="1dp"
+        android:text="Registriraj se"/>
 
     <EditText
         android:id="@+id/editEmail"
@@ -92,7 +97,7 @@
         android:textColor="#FFFFFF"/>
 
     <TextView
-        android:id="@+id/textNameAndSurname"
+        android:id="@+id/textName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/editName"
@@ -106,8 +111,8 @@
         android:layout_width="wrap_content"
         android:textSize="@dimen/text_size"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/textNameAndSurname"
-        android:layout_alignStart="@+id/textNameAndSurname"
+        android:layout_above="@+id/textName"
+        android:layout_alignStart="@+id/textName"
         android:ems="10"
         android:inputType="textPersonName"
         android:textColor="#FFFFFF"/>

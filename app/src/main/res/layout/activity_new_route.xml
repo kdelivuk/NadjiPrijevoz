@@ -1,134 +1,201 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="kristijandelivuk.com.nadjiprijevoz.Screens.NewRouteActivity">
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar"/>
-
-    <fragment
-        android:id="@+id/create_route_google_map"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_below="@+id/toolbar"
-        tools:context=".MapsActivity"/>
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/create_route_google_map">
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/container_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageDatePickerButton"
-                    android:src="@mipmap/date_picker_hdpi"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
-                    android:textSize="@dimen/text_size"
-                    android:id="@+id/showDate"
-                    android:layout_gravity="center"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/imageTimePickerButton"
-                    android:src="@mipmap/time_picker_hdpi"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="Medium Text"
-                    android:textSize="@dimen/text_size"
-                    android:id="@+id/showTime"
-                    android:layout_gravity="center"/>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/textSpacesAvailable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Slobodnih mjesta:"
-                android:textSize="@dimen/text_size"/>
-
-            <EditText
-                android:id="@+id/editSpacesAvailable"
-                android:enabled="true"
-                android:textSize="@dimen/text_size"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:weightSum="9">
-
-                <TextView
-                    android:id="@+id/textStartingLocationPlaceholder"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="4"/>
-
-                <TextView
-                    android:id="@+id/textDestination"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="-"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="1"
-                    android:textAlignment="center"
-                    android:layout_gravity="center"
-                    android:gravity="center"/>
-
-                <TextView
-                    android:id="@+id/textDestinationPlaceholder"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/text_size"
-                    android:layout_weight="4"/>
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/buttonCreate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size"
-                android:layout_gravity="center_horizontal"
-                android:text="Calculate Route"
-                />
-
+            <include
+                android:id="@+id/toolbar"
+                layout="@layout/toolbar"/>
         </LinearLayout>
 
+        <fragment
+            android:id="@+id/create_route_google_map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="260dp"
+            android:layout_below="@+id/toolbar"
+            tools:context=".MapsActivity"/>
 
-    </ScrollView>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/create_route_google_map">
 
-</RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/imageDatePickerButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/primary_round_alt"
+                        android:elevation="1dp"
+                        android:padding="5dp"
+                        android:src="@mipmap/date_picker_hdpi"
+                        android:textColor="#FFFFFF"
+                        android:translationZ="1dp"/>
+
+                    <TextView
+                        android:id="@+id/showDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:id="@+id/imageTimePickerButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/primary_round_alt"
+                        android:elevation="1dp"
+                        android:padding="5dp"
+                        android:src="@mipmap/time_picker_hdpi"
+                        android:textColor="#FFFFFF"
+                        android:translationZ="1dp"/>
+
+                    <TextView
+                        android:id="@+id/showTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"
+                        android:text=""
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/textSpacesAvailable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Slobodnih mjesta:"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size"/>
+
+                <EditText
+                    android:id="@+id/editSpacesAvailable"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
+                    android:enabled="true"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textSize="@dimen/text_size"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="9">
+
+                    <TextView
+                        android:id="@+id/textStartingLocationPlaceholder"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="4"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size"/>
+
+                    <TextView
+                        android:id="@+id/textDestination"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="-"
+                        android:textAlignment="center"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size"/>
+
+                    <TextView
+                        android:id="@+id/textDestinationPlaceholder"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="4"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="@dimen/text_size"/>
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/buttonCreate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/primary_round_alt"
+                    android:elevation="1dp"
+                    android:padding="5dp"
+                    android:text="Calculate Route"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/text_size"
+                    android:translationZ="1dp"
+                    />
+
+            </LinearLayout>
+
+
+        </ScrollView>
+
+
+    </LinearLayout>
+
+
+    <fragment
+        android:id="@+id/fragment_navigation_drawer"
+        android:name="kristijandelivuk.com.nadjiprijevoz.model.navigation.NavigationDrawerFragment"
+        android:layout_width="@dimen/nav_drawer_width"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:layout="@layout/navigation_drawer_fragment"
+        tools:layout="@layout/navigation_drawer_fragment"/>
+
+</android.support.v4.widget.DrawerLayout>

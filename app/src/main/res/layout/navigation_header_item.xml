@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="178dp"
-                android:background="@mipmap/header_background"
+                android:background="@mipmap/header_background_new"
                 android:orientation="vertical"
                 android:weightSum="1">
 
@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:textColor="#111111"
+            android:textColor="#FFFFFF"
             android:text="Ime Prezime"
             android:textSize="@dimen/text_subheader_size"
             android:textStyle="bold"
@@ -32,7 +32,7 @@
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#111111"
+            android:textColor="#FFFFFF"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="5dp"
             android:text="email@email.com"

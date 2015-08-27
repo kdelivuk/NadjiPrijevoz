@@ -1,20 +1,18 @@
 package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.TimePickerDialog;
-import android.content.Context;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -41,6 +39,8 @@ import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,9 +50,11 @@ import java.util.Locale;
 
 import kristijandelivuk.com.nadjiprijevoz.R;
 import kristijandelivuk.com.nadjiprijevoz.helper.Route;
+import kristijandelivuk.com.nadjiprijevoz.helper.TypefaceSpan;
 import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
+import kristijandelivuk.com.nadjiprijevoz.model.navigation.NavigationDrawerFragment;
 
 
 public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCallback,
@@ -68,6 +70,7 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
     private ImageButton mPickDate;
     private TextView mDisplayTime;
     private ImageButton mPickTime;
+    private TextView mTextSpacesAvailable;
 
     private List<Marker> routeMarkers;
     private Route rt;
@@ -97,7 +100,9 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
 
         routeIsCalculated = false;
 
-
+        SpannableString s = new SpannableString("Nova ruta");
+        s.setSpan(new TypefaceSpan(this, "Choplin.otf"), 0, s.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         SupportMapFragment map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.create_route_google_map);
         map.getMapAsync(this);
@@ -114,11 +119,23 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
         mPickDate = (ImageButton) findViewById(R.id.imageDatePickerButton);
         mDisplayTime = (TextView) findViewById(R.id.showTime);
         mPickTime = (ImageButton) findViewById(R.id.imageTimePickerButton);
+        mTextSpacesAvailable = (TextView) findViewById(R.id.textSpacesAvailable);
+
+        Typeface gidole = Typeface.createFromAsset(getAssets(), "fonts/Gidole_Regular.ttf");
+
+        mStartingPoint.setTypeface(gidole);
+        mDestination.setTypeface(gidole);
+        mNumberOfSpaces.setTypeface(gidole);
+        mButtonCreate.setTypeface(gidole);
+        mDisplayDate.setTypeface(gidole);
+        mDisplayTime.setTypeface(gidole);
+        mTextSpacesAvailable.setTypeface(gidole);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle(s);
 
         mPickDate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,13 +162,13 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View v) {
 
                 Calendar c = Calendar.getInstance();
-                final int hour = c.get(Calendar.HOUR_OF_DAY);
+                int hour = c.get(Calendar.HOUR);
                 int minute = c.get(Calendar.MINUTE);
 
                 TimePickerDialog tpd = new TimePickerDialog(NewRouteActivity.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        mDisplayTime.setText(hour + ":" + minute);
+                        mDisplayTime.setText(hourOfDay + ":" + minute);
                     }
                 }, hour, minute, true);
 
@@ -169,20 +186,37 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View v) {
 
                 if (routeIsCalculated) {
-                    try {
-                        createNewRoute();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    if (!(mDisplayDate.getText().toString().trim().equals("")) &&
+                            !(mDisplayTime.getText().toString().trim().equals("")) &&
+                            !(mNumberOfSpaces.getText().toString().trim().equals(""))) {
+                        try {
+                            createNewRoute();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(NewRouteActivity.this, "Unesite datum, vrijeme i broj slobodnih mjesta." , Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    rt.clearRoute();
-                    rt.drawRoute(mGoogleMap, NewRouteActivity.this, new ArrayList<LatLng>(points), "en", false);
-                    routeIsCalculated = true;
-                    mButtonCreate.setText("Save Route");
-
+                    if (points.size() >= 2) {
+                        rt.clearRoute();
+                        rt.drawRoute(mGoogleMap, NewRouteActivity.this, new ArrayList<LatLng>(points), "en", false);
+                        routeIsCalculated = true;
+                        mButtonCreate.setText("Save Route");
+                        try {
+                            setupStartingAndEndingLocation();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(NewRouteActivity.this, "Unesite 2 ili vise tocke u mapu." , Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
+
+        NavigationDrawerFragment drawerFragment = (NavigationDrawerFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_navigation_drawer);
+        drawerFragment.setUp(R.id.fragment_navigation_drawer, (DrawerLayout) findViewById(R.id.drawer_layout), toolbar);
 
     }
 
@@ -256,7 +290,7 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
         if (mLastLocation == null) {
             Toast.makeText(NewRouteActivity.this, "There is currently no connectivity", Toast.LENGTH_LONG).show();
         } else {
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude() , mLastLocation.getLongitude()) , 12));
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 12));
 
         }
     }
@@ -276,6 +310,7 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
     }
 
     public void setupStartingAndEndingLocation() throws IOException{
+
         Geocoder gcd = new Geocoder(this, Locale.getDefault());
         List<Address> addressesBegin = gcd.getFromLocation(points.get(0).latitude, points.get(0).longitude, 1);
         if (addressesBegin.size() > 0) {
@@ -369,12 +404,13 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
 
         ParseObject parseRoute = new ParseObject("Route");
         parseRoute.put("destination" , mNewRoute.getDestination());
-        parseRoute.put("startingPoint" , mNewRoute.getStartingPoint());
-        parseRoute.put("numberOfSpaces" , mNewRoute.getSpacesAvailable());
+        parseRoute.put("startingPoint", mNewRoute.getStartingPoint());
+        parseRoute.put("numberOfSpaces", mNewRoute.getSpacesAvailable());
         parseRoute.put("creator" , currentUser);
         parseRoute.put("startingPointGeo", parseGeoPoint);
         parseRoute.put("points", parsePoints);
-
+        parseRoute.put("date" , mNewRoute.getDate());
+        parseRoute.put("time" , mNewRoute.getTime());
 
         parseRoute.saveInBackground(new SaveCallback() {
             @Override
