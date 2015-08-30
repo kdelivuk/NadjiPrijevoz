@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import kristijandelivuk.com.nadjiprijevoz.model.CommentModel;
 import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
@@ -117,16 +118,64 @@ public class ParseCommunicator {
 
         }
 
+        ArrayList<CommentModel> comments = new ArrayList<>();
+        JSONArray jsonArrayComments = item.getJSONArray("comments");
+
+        if (jsonArrayComments != null) {
+            for (int i = 0; i < jsonArrayComments.length(); i++) {
+
+                try {
+                    JSONObject object = jsonArrayComments.getJSONObject(i);
+                    Log.v("objectID", object.getString("objectId"));
+                    String id = object.getString("objectId");
+
+                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
+                    query.whereEqualTo("objectId", id);
+                    ParseObject parseComment = query.getFirst();
+
+                    ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+                    userQuery.whereEqualTo("objectId", parseComment.get("creator").toString());
+                    ParseUser parseAuthor = userQuery.getFirst();
+
+                    ParseFile passangerFileObject = (ParseFile) parseAuthor.get("profileImage");
+                    byte[] authorData = new byte[0];
+                    try {
+                        authorData = passangerFileObject.getData();
+                    } catch (com.parse.ParseException ex) {
+                        ex.printStackTrace();
+                    }
+
+                    User author = new User(
+                            parseAuthor.getUsername(),
+                            parseAuthor.getString("name"),
+                            parseAuthor.getString("surname"),
+                            parseAuthor.getString("phone"),
+                            parseAuthor.getEmail(),
+                            authorData
+                    );
+
+                    comments.add(new CommentModel(parseComment.getString("message") , author));
+
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                }
+
+            }
+        }
+
         RouteModel route = new RouteModel(
                 item.getString("destination"),
                 item.getString("startingPoint"),
                 creatorUser,
                 passangers,
                 points,
-                item.getInt("spacesAvailable"),
+                item.getInt("numberOfSpaces"),
                 item.getObjectId(),
                 item.getString("time"),
-                item.getString("date")
+                item.getString("date"),
+                comments
         );
 
         return route;

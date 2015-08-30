@@ -1,11 +1,15 @@
 package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -56,20 +60,41 @@ public class RouteDetailNavigationAdapter extends RecyclerView.Adapter<RouteDeta
     @Override
     public void onBindViewHolder(RouteDetailNavigationViewHolder holder, int position) {
         User currentItem = mPassangers.get(position);
-        holder.mText.setText(currentItem.getName() + " " + currentItem.getSurname() + " " + currentItem.getEmail() + " " + currentItem.getPhoneNumber());
-        //holder.mImageView.setImageResource(currentItem.getResId());
+        holder.mTextNameSurname.setText(currentItem.getName() + " " + currentItem.getSurname());
+        holder.mTextEmail.setText(currentItem.getEmail());
+        holder.mTextPhone.setText(currentItem.getPhoneNumber());
+
+
+        byte[] data = currentItem.getData();
+
+        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+        holder.mImageProfile.setImageBitmap(bitmap);
+
     }
 
     class RouteDetailNavigationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        TextView mText;
+        ImageView mImageProfile;
+        TextView mTextNameSurname;
+        TextView mTextPhone;
+        TextView mTextEmail;
 
 
         public RouteDetailNavigationViewHolder(View itemView) {
             super(itemView);
 
+            Typeface gidole = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Gidole_Regular.ttf");
+
             itemView.setOnClickListener(this);
-            mText = (TextView) itemView.findViewById(R.id.rowRouteDetailText);
+            mTextNameSurname = (TextView) itemView.findViewById(R.id.rowRouteDetailText);
+            mTextPhone = (TextView) itemView.findViewById(R.id.rowPhoneNumberText);
+            mTextEmail = (TextView) itemView.findViewById(R.id.rowEmailText);
+            mImageProfile = (ImageView) itemView.findViewById(R.id.imageProfileSmall);
+
+            mTextNameSurname.setTypeface(gidole);
+            mTextPhone.setTypeface(gidole);
+            mTextEmail.setTypeface(gidole);
 
         }
 

@@ -51,6 +51,7 @@ import java.util.Locale;
 import kristijandelivuk.com.nadjiprijevoz.R;
 import kristijandelivuk.com.nadjiprijevoz.helper.Route;
 import kristijandelivuk.com.nadjiprijevoz.helper.TypefaceSpan;
+import kristijandelivuk.com.nadjiprijevoz.model.CommentModel;
 import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
@@ -368,7 +369,8 @@ public class NewRouteActivity extends AppCompatActivity implements OnMapReadyCal
                 Integer.parseInt(mNumberOfSpaces.getText().toString()),
                 "",
                 mDisplayTime.getText().toString(),
-                mDisplayDate.getText().toString()
+                mDisplayDate.getText().toString(),
+                new ArrayList<CommentModel>()
         );
 
         ParseObject point;

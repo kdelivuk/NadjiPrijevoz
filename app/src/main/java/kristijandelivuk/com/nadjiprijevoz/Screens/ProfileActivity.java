@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -68,11 +69,17 @@ public class ProfileActivity extends AppCompatActivity implements ProfileMapAdap
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(s);
 
+        Typeface gidole = Typeface.createFromAsset(getAssets(), "fonts/Gidole_Regular.ttf");
+        Typeface choplin = Typeface.createFromAsset(getAssets(), "fonts/Choplin.otf");
+
         mUserNameAndSurname = (TextView) findViewById(R.id.textNameSurname);
         mUserPhoneNumber = (TextView) findViewById(R.id.textPhone);
         mUserEmail = (TextView) findViewById(R.id.textEmail);
         mProfileImage = (ImageView) findViewById(R.id.imageProfile);
 
+        mUserNameAndSurname.setTypeface(choplin);
+        mUserPhoneNumber.setTypeface(gidole);
+        mUserEmail.setTypeface(gidole);
 
         mRecyclerView = (RecyclerView)findViewById(R.id.my_recycler_view);
 

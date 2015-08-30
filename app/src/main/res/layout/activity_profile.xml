@@ -72,14 +72,14 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:textAlignment="center"
-                        android:gravity="left|center_vertical"
                         android:textColor="#000000"
-                        android:layout_marginLeft="0dp"/>
+                        android:layout_marginLeft="0dp"
+                        android:gravity="left|clip_vertical"/>
 
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
                         android:layout_marginTop="5dp">
@@ -107,7 +107,7 @@
 
                     <LinearLayout
                         android:orientation="horizontal"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         >
 
@@ -140,12 +140,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
+                android:background="@drawable/primary_round"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:layout_weight="1">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/my_recycler_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_gravity="left|center_vertical"/>
 
             </LinearLayout>

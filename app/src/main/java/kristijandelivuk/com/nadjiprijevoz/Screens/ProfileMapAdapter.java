@@ -1,6 +1,7 @@
 package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -64,21 +65,20 @@ class ProfileMapAdapter extends RecyclerView.Adapter<ProfileMapAdapter.ProfileRo
 
         final LatLngBounds boundsfinal = boundsBuilder.build();
 
-        ViewTreeObserver vto = layout.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @SuppressWarnings("deprecation")
+        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
-            public void onGlobalLayout() {
-                layout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            public void onMapLoaded() {
                 mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(boundsfinal, 25));
             }
         });
 
     }
+
     @Override
     public void onBindViewHolder(ProfileRouteViewHolder holder, int position) {
-        holder.destination.setText(routesCV.get(position).getDestination());
+        holder.destination.setText(" - " + routesCV.get(position).getDestination());
         holder.startingPoint.setText(routesCV.get(position).getStartingPoint());
+        holder.dateAndTime.setText(routesCV.get(position).getDate() + "  " + routesCV.get(position).getTime());
 
         GoogleMap gMap = holder.map.getMap();
 
@@ -126,6 +126,7 @@ class ProfileMapAdapter extends RecyclerView.Adapter<ProfileMapAdapter.ProfileRo
         CardView cv;
         TextView destination;
         TextView startingPoint;
+        TextView dateAndTime;
         MapView map;
         List<RouteModel> routesCV;
         LinearLayout linearlayout;
@@ -138,6 +139,14 @@ class ProfileMapAdapter extends RecyclerView.Adapter<ProfileMapAdapter.ProfileRo
             cv = (CardView) itemView.findViewById(R.id.cv);
             destination = (TextView) itemView.findViewById(R.id.destinationCV);
             startingPoint = (TextView) itemView.findViewById(R.id.startingPointCV);
+            dateAndTime = (TextView) itemView.findViewById(R.id.textDateAndTimeCV);
+
+            Typeface gidole = Typeface.createFromAsset(itemView.getContext().getAssets(), "fonts/Gidole_Regular.ttf");
+
+            destination.setTypeface(gidole);
+            startingPoint.setTypeface(gidole);
+            dateAndTime.setTypeface(gidole);
+
             map = (MapView) itemView.findViewById(R.id.map_view);
             linearlayout = (LinearLayout) itemView.findViewById(R.id.linearlayout);
             itemView.setOnClickListener(this);

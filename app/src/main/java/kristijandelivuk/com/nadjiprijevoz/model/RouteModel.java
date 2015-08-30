@@ -19,10 +19,11 @@ public class RouteModel implements Parcelable {
     private String id;
     private String mTime;
     private String mDate;
+    private ArrayList<CommentModel> mComments;
 
 
     public RouteModel(String destination, String startingPoint, User creator, ArrayList<User> passangers,
-                      ArrayList<PointModel> points, int spacesAvailable, String id, String time, String date) {
+                      ArrayList<PointModel> points, int spacesAvailable, String id, String time, String date, ArrayList<CommentModel> comments) {
         mDestination = destination;
         mStartingPoint = startingPoint;
         mCreator = creator;
@@ -32,6 +33,15 @@ public class RouteModel implements Parcelable {
         this.id = id;
         mTime = time;
         mDate = date;
+        mComments = comments;
+    }
+
+    public ArrayList<CommentModel> getComments() {
+        return mComments;
+    }
+
+    public void setComments(ArrayList<CommentModel> comments) {
+        mComments = comments;
     }
 
     public String getTime() {
@@ -126,6 +136,12 @@ public class RouteModel implements Parcelable {
         id = in.readString();
         mTime = in.readString();
         mDate = in.readString();
+        if (in.readByte() == 0x01) {
+            mComments = new ArrayList<CommentModel>();
+            in.readList(mComments, CommentModel.class.getClassLoader());
+        } else {
+            mComments = null;
+        }
     }
 
     @Override
@@ -154,6 +170,12 @@ public class RouteModel implements Parcelable {
         dest.writeString(id);
         dest.writeString(mTime);
         dest.writeString(mDate);
+        if (mComments == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(mComments);
+        }
     }
 
     @SuppressWarnings("unused")

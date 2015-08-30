@@ -1,6 +1,7 @@
 package kristijandelivuk.com.nadjiprijevoz.Screens;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -57,6 +58,10 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
     private TextView mStartingPoint;
     private TextView mDestination;
     private TextView mSpacesAvailable;
+    private TextView mTextStartingPoint;
+    private TextView mTextDestination;
+    private TextView mTextSpacesAvailable;
+
     private Button mJoinRoute;
     private ArrayList<ParseUser> mPassangers;
     private boolean userAlreadyInArray;
@@ -87,11 +92,27 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
         mGoogleMap = map.getMap();
 
         mLayout = (LinearLayout) findViewById(R.id.layout_detail_route);
+
+        Typeface choplin = Typeface.createFromAsset(getAssets(), "fonts/Choplin.otf");
+        Typeface gidole = Typeface.createFromAsset(getAssets(), "fonts/Gidole_Regular.ttf");
+
         mStartingPoint = (TextView) findViewById(R.id.textStartingPointPlaceholder);
         mDestination = (TextView) findViewById(R.id.textDestinationPlaceholder);
         mSpacesAvailable = (TextView) findViewById(R.id.textSpacesAvailablePlaceholder);
         mJoinRoute = (Button) findViewById(R.id.buttonJoin);
 
+        mTextStartingPoint = (TextView) findViewById(R.id.textStartingPoint);
+        mTextDestination = (TextView) findViewById(R.id.textDestination);
+        mTextSpacesAvailable = (TextView) findViewById(R.id.textSpacesAvailable);
+
+        mTextStartingPoint.setTypeface(choplin);
+        mTextDestination.setTypeface(choplin);
+        mTextSpacesAvailable.setTypeface(choplin);
+
+        mStartingPoint.setTypeface(gidole);
+        mDestination.setTypeface(gidole);
+        mSpacesAvailable.setTypeface(gidole);
+        mJoinRoute.setTypeface(gidole);
 
         mPoints = new ArrayList<LatLng>();
         mUserPositions = new ArrayList<>();
@@ -116,7 +137,9 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
         mJoinRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                addUserToTheRoute();
+                if (Integer.parseInt(mSpacesAvailable.getText().toString()) > 0) {
+                    addUserToTheRoute();
+                }
             }
         });
 
@@ -129,7 +152,8 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
         mAdapter = new RouteDetailNavigationAdapter(RouteDetailActivity.this, mSelectedRoute.getPassangers());
         mAdapter.setOnClickListener(this);
         mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(RouteDetailActivity.this));
+        LinearLayoutManager llm = new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false);
+        mRecyclerView.setLayoutManager(llm);
 
     }
 
@@ -191,6 +215,10 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
                 }
             }
         });
+
+        if (mPassangers.size() == 0) {
+            mSpacesAvailable.setText(String.valueOf(mSelectedRoute.getSpacesAvailable()));
+        }
     }
 
     private void addUserToTheRoute() {

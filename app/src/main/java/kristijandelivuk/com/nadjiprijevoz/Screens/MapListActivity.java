@@ -48,6 +48,7 @@ import java.util.List;
 import kristijandelivuk.com.nadjiprijevoz.R;
 import kristijandelivuk.com.nadjiprijevoz.helper.Route;
 import kristijandelivuk.com.nadjiprijevoz.helper.TypefaceSpan;
+import kristijandelivuk.com.nadjiprijevoz.model.CommentModel;
 import kristijandelivuk.com.nadjiprijevoz.model.PointModel;
 import kristijandelivuk.com.nadjiprijevoz.model.RouteModel;
 import kristijandelivuk.com.nadjiprijevoz.model.User;
@@ -146,6 +147,53 @@ public class MapListActivity extends AppCompatActivity implements RVAdapter.List
                             }
                         }
 
+                        ArrayList<CommentModel> comments = new ArrayList<>();
+                        JSONArray jsonArrayComments = item.getJSONArray("comments");
+
+                        if (jsonArrayComments != null) {
+                            for (int i = 0; i < jsonArrayComments.length(); i++) {
+
+                                try {
+                                    JSONObject object = jsonArrayComments.getJSONObject(i);
+                                    Log.v("objectID", object.getString("objectId"));
+                                    String id = object.getString("objectId");
+
+                                    ParseQuery<ParseObject> query = ParseQuery.getQuery("Comment");
+                                    query.whereEqualTo("objectId", id);
+                                    ParseObject parseComment = query.getFirst();
+
+                                    ParseQuery<ParseUser> userQuery = ParseUser.getQuery();
+                                    userQuery.whereEqualTo("objectId", parseComment.get("creator").toString());
+                                    ParseUser parseAuthor = userQuery.getFirst();
+
+                                    ParseFile passangerFileObject = (ParseFile) parseAuthor.get("profileImage");
+                                    byte[] authorData = new byte[0];
+                                    try {
+                                        authorData = passangerFileObject.getData();
+                                    } catch (com.parse.ParseException ex) {
+                                        ex.printStackTrace();
+                                    }
+
+                                    User author = new User(
+                                            parseAuthor.getUsername(),
+                                            parseAuthor.getString("name"),
+                                            parseAuthor.getString("surname"),
+                                            parseAuthor.getString("phone"),
+                                            parseAuthor.getEmail(),
+                                            authorData
+                                    );
+
+                                    comments.add(new CommentModel(parseComment.getString("message") , author));
+
+                                } catch (ParseException e1) {
+                                    e1.printStackTrace();
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+
+                            }
+                        }
+
                         RouteModel route = new RouteModel(
                                 item.get("destination").toString(),
                                 item.get("startingPoint").toString(),
@@ -155,7 +203,8 @@ public class MapListActivity extends AppCompatActivity implements RVAdapter.List
                                 Integer.parseInt(item.get("numberOfSpaces").toString()),
                                 item.getObjectId(),
                                 item.get("time").toString(),
-                                item.get("date").toString()
+                                item.get("date").toString(),
+                                comments
                         );
 
 
@@ -254,9 +303,8 @@ class RVAdapter extends RecyclerView.Adapter<RVAdapter.RouteViewHolder> {
             }
         });
 
-
-
     }
+
     @Override
     public void onBindViewHolder(RouteViewHolder holder, int position) {
         holder.destination.setText(" - " + routesCV.get(position).getDestination());
