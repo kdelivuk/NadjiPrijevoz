@@ -32,4 +32,5 @@
 
     <string name="drawer_open">Open</string>
     <string name="drawer_close">Closed</string>
+    <string name="title_activity_comments_detail">Comment Details</string>
 </resources>

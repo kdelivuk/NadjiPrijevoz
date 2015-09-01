@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -61,10 +63,16 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
     private TextView mTextStartingPoint;
     private TextView mTextDestination;
     private TextView mTextSpacesAvailable;
+    private EditText mEditText;
+
+    private ArrayList<ParseObject> mComments;
 
     private Button mJoinRoute;
     private ArrayList<ParseUser> mPassangers;
-    private boolean userAlreadyInArray;
+
+    private ImageButton mMakeComment;
+    private ImageButton mViewComments;
+
     // routes
     private RouteModel mSelectedRoute;
     private ArrayList<LatLng> mPoints;
@@ -104,6 +112,9 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
         mTextStartingPoint = (TextView) findViewById(R.id.textStartingPoint);
         mTextDestination = (TextView) findViewById(R.id.textDestination);
         mTextSpacesAvailable = (TextView) findViewById(R.id.textSpacesAvailable);
+        mMakeComment = (ImageButton) findViewById(R.id.buttonComment);
+        mEditText = (EditText) findViewById(R.id.editEnterComment);
+        mViewComments = (ImageButton) findViewById(R.id.buttonViewComments);
 
         mTextStartingPoint.setTypeface(choplin);
         mTextDestination.setTypeface(choplin);
@@ -113,6 +124,7 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
         mDestination.setTypeface(gidole);
         mSpacesAvailable.setTypeface(gidole);
         mJoinRoute.setTypeface(gidole);
+        mEditText.setTypeface(gidole);
 
         mPoints = new ArrayList<LatLng>();
         mUserPositions = new ArrayList<>();
@@ -139,6 +151,26 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
             public void onClick(View v) {
                 if (Integer.parseInt(mSpacesAvailable.getText().toString()) > 0) {
                     addUserToTheRoute();
+                }
+            }
+        });
+
+        mMakeComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mEditText.getText().toString().length() > 0) {
+                    addCommentToTheRoute();
+                }
+            }
+        });
+
+        mViewComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mEditText.getText().toString().length() > 0) {
+                    Intent intent = new Intent(RouteDetailActivity.this, CommentListActivity.class);
+                    intent.putExtra("selectedRouteComments", mSelectedRoute);
+                    startActivity(intent);
                 }
             }
         });
@@ -187,12 +219,12 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
                                             mPassangers.add(parseUser);
 
                                             mGoogleMap.addMarker(
-                                                new MarkerOptions()
-                                                        .position(new LatLng(
-                                                                parseUser.getParseGeoPoint("location").getLatitude(),
-                                                                parseUser.getParseGeoPoint("location").getLongitude()))
-                                                        .title("Passanger: " + parseUser.getString("name") + " " + parseUser.getString("surname"))
-                                                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.passanger_icon))
+                                                    new MarkerOptions()
+                                                            .position(new LatLng(
+                                                                    parseUser.getParseGeoPoint("location").getLatitude(),
+                                                                    parseUser.getParseGeoPoint("location").getLongitude()))
+                                                            .title("Passanger: " + parseUser.getString("name") + " " + parseUser.getString("surname"))
+                                                            .icon(BitmapDescriptorFactory.fromResource(R.mipmap.passanger_icon))
                                             );
 
 
@@ -288,6 +320,79 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
 
                         if (e == null) {
                             Toast.makeText(RouteDetailActivity.this, "User added", Toast.LENGTH_LONG);
+                        } else {
+                            Log.v("error", e.toString());
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void addCommentToTheRoute() {
+
+        mComments = new ArrayList<>();
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Route");
+        query.whereEqualTo("objectId", mSelectedRoute.getId());
+        query.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+
+                if (e == null) {
+
+                    JSONArray jsonArray = parseObject.getJSONArray("comments");
+
+                    if (jsonArray != null) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+
+                            try {
+                                JSONObject object = jsonArray.getJSONObject(i);
+                                Log.v("objectID", object.getString("objectId"));
+                                String id = object.getString("objectId");
+                                ParseQuery query = ParseQuery.getQuery("Comment");
+                                query.whereEqualTo("objectId", id);
+                                ParseObject parseObjectQuery = query.getFirst();
+
+                                mComments.add(parseObjectQuery);
+                                Log.v("mComments", mComments.size() + "");
+
+                            } catch (JSONException e1) {
+                                e1.printStackTrace();
+                            } catch (ParseException e1) {
+                                e1.printStackTrace();
+                            }
+
+                        }
+                    }
+
+                    ParseObject comment = new ParseObject("Comment");
+                    comment.put("message", mEditText.getText().toString());
+                    comment.put("creator", ParseUser.getCurrentUser());
+
+                    mComments.add(comment);
+                    Log.v("mComments", mComments.size() + "");
+
+                } else {
+                    Log.v("error", e.toString());
+                }
+            }
+        });
+
+        ParseQuery<ParseObject> queryDva = ParseQuery.getQuery("Route");
+        queryDva.whereEqualTo("objectId", mSelectedRoute.getId());
+        queryDva.getFirstInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+
+                parseObject.put("comments", mComments);
+                parseObject.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+
+                        if (e == null) {
+                            Toast.makeText(RouteDetailActivity.this, "Comment added", Toast.LENGTH_LONG);
                         } else {
                             Log.v("error", e.toString());
                         }

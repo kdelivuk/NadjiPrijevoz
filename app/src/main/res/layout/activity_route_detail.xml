@@ -36,7 +36,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="10dp"
                 android:weightSum="2">
 
                 <TextView
@@ -101,6 +101,54 @@
                     android:layout_height="wrap_content"
                     android:textSize="@dimen/text_subheader_size"
                     android:layout_weight="1"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="10dp"
+                android:weightSum="7">
+
+                <EditText
+                    android:id="@+id/editEnterComment"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text=""
+                    android:textSize="@dimen/text_subheader_size"
+                    android:layout_weight="5"/>
+
+                <ImageButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="@dimen/text_size"
+                    android:background="@drawable/primary_round"
+                    android:layout_weight="1"
+                    android:textColor="#FFFFFF"
+                    android:translationZ="1dp"
+                    android:elevation="1dp"
+                    android:text=""
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/buttonComment"
+                    android:src="@mipmap/add_comment_icon"/>
+
+                <ImageButton
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="@dimen/text_size"
+                    android:background="@drawable/primary_round"
+                    android:layout_weight="1"
+                    android:textColor="#FFFFFF"
+                    android:translationZ="1dp"
+                    android:elevation="1dp"
+                    android:text=""
+                    android:layout_marginRight="5dp"
+                    android:id="@+id/buttonViewComments"
+                    android:src="@mipmap/icon_view_comments"/>
+
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView

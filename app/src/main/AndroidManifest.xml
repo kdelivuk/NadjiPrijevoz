@@ -61,6 +61,10 @@
             android:name=".Screens.RouteDetailActivity"
             android:label="@string/title_activity_route_detail" >
         </activity>
+        <activity
+            android:name=".Screens.CommentListActivity"
+            android:label="@string/title_activity_comments_detail" >
+        </activity>
     </application>
 
 </manifest>
