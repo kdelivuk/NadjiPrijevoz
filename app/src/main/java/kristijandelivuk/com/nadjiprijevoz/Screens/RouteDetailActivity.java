@@ -159,7 +159,11 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
             @Override
             public void onClick(View v) {
                 if (mEditText.getText().toString().length() > 0) {
-                    addCommentToTheRoute();
+                    try {
+                        addCommentToTheRoute();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         });
@@ -167,11 +171,9 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
         mViewComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mEditText.getText().toString().length() > 0) {
-                    Intent intent = new Intent(RouteDetailActivity.this, CommentListActivity.class);
-                    intent.putExtra("selectedRouteComments", mSelectedRoute);
-                    startActivity(intent);
-                }
+                Intent intent = new Intent(RouteDetailActivity.this, CommentListActivity.class);
+                intent.putExtra("selectedRouteComments", mSelectedRoute);
+                startActivity(intent);
             }
         });
 
@@ -299,7 +301,6 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
 
                     mPassangers.add(ParseUser.getCurrentUser());
                     Log.v("size", mPassangers.size() + "");
-                    loadPassangers();
 
                 } else {
                     Log.v("error", e.toString());
@@ -330,76 +331,54 @@ public class RouteDetailActivity extends AppCompatActivity implements OnMapReady
 
     }
 
-    private void addCommentToTheRoute() {
+    private void addCommentToTheRoute() throws ParseException {
 
         mComments = new ArrayList<>();
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Route");
         query.whereEqualTo("objectId", mSelectedRoute.getId());
-        query.getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
+        ParseObject parseObject = query.getFirst();
 
-                if (e == null) {
+        JSONArray jsonArray = parseObject.getJSONArray("comments");
 
-                    JSONArray jsonArray = parseObject.getJSONArray("comments");
+        if (jsonArray != null) {
+            Log.v("testdva", jsonArray.length() + "");
+            for (int i = 0; i < jsonArray.length(); i++) {
 
-                    if (jsonArray != null) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
+                try {
+                    Log.v("testtri", mComments.size() + "");
+                    JSONObject object = jsonArray.getJSONObject(i);
+                    Log.v("objectID", object.getString("objectId"));
+                    String id = object.getString("objectId");
+                    ParseQuery queryTri = ParseQuery.getQuery("Comment");
+                    queryTri.whereEqualTo("objectId", id);
+                    ParseObject parseObjectQuery = queryTri.getFirst();
 
-                            try {
-                                JSONObject object = jsonArray.getJSONObject(i);
-                                Log.v("objectID", object.getString("objectId"));
-                                String id = object.getString("objectId");
-                                ParseQuery query = ParseQuery.getQuery("Comment");
-                                query.whereEqualTo("objectId", id);
-                                ParseObject parseObjectQuery = query.getFirst();
+                    mComments.add(parseObjectQuery);
+                    Log.v("mCommentsJen", mComments.size() + "");
 
-                                mComments.add(parseObjectQuery);
-                                Log.v("mComments", mComments.size() + "");
-
-                            } catch (JSONException e1) {
-                                e1.printStackTrace();
-                            } catch (ParseException e1) {
-                                e1.printStackTrace();
-                            }
-
-                        }
-                    }
-
-                    ParseObject comment = new ParseObject("Comment");
-                    comment.put("message", mEditText.getText().toString());
-                    comment.put("creator", ParseUser.getCurrentUser());
-
-                    mComments.add(comment);
-                    Log.v("mComments", mComments.size() + "");
-
-                } else {
-                    Log.v("error", e.toString());
+                } catch (JSONException e1) {
+                    e1.printStackTrace();
+                } catch (ParseException e1) {
+                    e1.printStackTrace();
                 }
+
             }
-        });
+        }
+
+        ParseObject comment = new ParseObject("Comment");
+        comment.put("message", mEditText.getText().toString());
+        comment.put("creator", ParseUser.getCurrentUser());
+
+        mComments.add(comment);
+        Log.v("mCommentsDva", mComments.size() + "");
 
         ParseQuery<ParseObject> queryDva = ParseQuery.getQuery("Route");
         queryDva.whereEqualTo("objectId", mSelectedRoute.getId());
-        queryDva.getFirstInBackground(new GetCallback<ParseObject>() {
-            @Override
-            public void done(ParseObject parseObject, ParseException e) {
+        ParseObject parseObjectDva = queryDva.getFirst();
 
-                parseObject.put("comments", mComments);
-                parseObject.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(ParseException e) {
-
-                        if (e == null) {
-                            Toast.makeText(RouteDetailActivity.this, "Comment added", Toast.LENGTH_LONG);
-                        } else {
-                            Log.v("error", e.toString());
-                        }
-                    }
-                });
-            }
-        });
+        parseObjectDva.put("comments", mComments);
+        parseObjectDva.save();
 
     }
 
